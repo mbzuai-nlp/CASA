@@ -1,0 +1,391 @@
+media_file,annotator,start,end,label
+24ma,PAR,0,7819,so here we are in Friuli .
+24ma,PAR,7819,8460,did I say that right ?
+24ma,PAR,8460,9369,Friuli ?
+24ma,PAR,9369,17183,tucked away in a remote corner of the Alpine foothills in  northeastern Italy at a little restaurant .
+24ma,PAR,17183,22591,I hafta admit that when I travel history is not the first thing on  my mind .
+24ma,PAR,22591,25770,food and wine are here .
+24ma,PAR,25770,29905,and that's what sold me on Friuli .
+24ma,PAR,29905,34712,it is famous as a source of some of Italy's best white wines .
+24ma,PAR,34712,41523,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+24ma,PAR,41523,57790,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+24ma,PAR,57790,63781,directly to the south is Venice just a little more than an hour and  a half away .
+24ma,PAR,63781,70686,though off the beaten tourist track Friuli is hard in the path of  history .
+24ma,PAR,70686,79685,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+24ma,PAR,79685,82687,as a result things look different here .
+24ma,PAR,82687,92223,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+24ma,PAR,92223,100781,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+24ma,PAR,100781,106310,here you'll find gray stone castles rather than sun-drenched villas  .
+24ma,PAR,106310,115812,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+24ma,PAR,115812,120534,reading adult level xxx .
+32m,PAR,0,23001,so here we are in F:riuli [/] F:riuli tucked away in a remote  corner of the Alpine foothills in ≠northeastern ≠Italy at a little  restaurant .
+32m,PAR,23001,27797,I hafta admit that when I travel history is not the first thing on  my mind .
+32m,PAR,27797,31007,food and wine are .
+32m,PAR,31007,34768,and that's what sold me on Friuli .
+32m,PAR,34768,40294,it is famous as a source of some of ≠Italy's best white wines .
+32m,PAR,40294,47228,we went primarily in search of wines unaware that we soon would  make a ≠culinary detour .
+32m,PAR,47228,77808,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to &-uh  ≠placid plains in the west and the majestic Alps in the n:orth where  Italy butts up against Austria .
+32m,PAR,77808,86477,directly to the south is ≠Venice just a little more than an hour  and a half away .
+32m,PAR,86477,91053,though off the beaten tourist track Friuli is hard in the path of  history .
+32m,PAR,91053,100712,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+32m,PAR,100712,103723,as a result things look different here .
+32m,PAR,103723,116182,"rather than the familiar cultural overlay of most of ≠Italy, the  central European influence is readily apparent in Friuli ."
+32m,PAR,116182,128529,the architecture tends more toward Austrian grandeur than Tuscan  simplic:ity [/] simplic:ity .
+32m,PAR,128529,134512,here you'll find gray stone castles rather than sun drenched villas  .
+32m,PAR,135502,137973,"the people look different too ≠taller and blonder than southern  Italians, and with plenty of German and C:entral European s:urnames  ."
+42m,PAR,0,19234,so here we are in ↫FF↫Friuli tucked away in a remote corner of the  Alpine ↫ff↫foothills in ↫n↫northeastern I^ta^ly at a little  restaurant .
+42m,PAR,19234,27138,I hafta admit that when I travel history is not the first thing on  my mind .
+42m,PAR,27138,30687,↫ff↫f:ood and wine are .
+42m,PAR,30687,36839,and that's what ↫s↫sold me on F:riuli .
+42m,PAR,36839,53944,≠it is a ≠↫ff-ff-ff↫famous ≠as [/] as a ↫s↫source of some of  Italy's best white wines .
+42m,PAR,53944,67766,we went ↫p↫primar^ily in search of wines unaware that [/] that we  soon would make a culinary detour .
+42m,PAR,67766,95354,↫o↫occupying the extreme northeast corner of I^ta^ly ↫F↫Friuli's  scenery ranges from rugged coastline along the eastern ≠↫b-b↫border  to placid plains in the ≠west and the majestic Alps in the north  where I↫t↫^taly butts up against Austria .
+42m,PAR,95354,109471,↫dir-d-d↫directly to the south is ↫V-V↫Venice just a little more  than an hour and a half away .
+42m,PAR,109471,123959,though off the ≠beaten tourist track ↫FF↫Friuli is hard in the path  of his^tory .
+42m,PAR,123959,139137,s:^tanding at one of the major crossroads ↫be↫between Western  Europe and the East it was conquered by just ↫ab↫about everyone who  passed by .
+42m,PAR,139137,142803,as a result things look different here .
+42m,PAR,142803,162820,rather than the ↫ff↫familiar ↫cul↫cultural overlay of most of Italy  the ↫cc↫central European ≠↫i↫influence is readily apparent in  Fri^uli .
+42m,PAR,162820,172318,the architecture tends more towards Austrian grandeur than Tuscan  simplic^↫i↫ity .
+42m,PAR,172318,180438,here you'll find the gray stone castles rather than the sun  drenched ↫v↫villas .
+42m,PAR,180438,200700,the people look ≠different too taller and bl^onder than s:outhern  Italians and with plenty of German and C:entral European  ↫ss↫surnames .
+57m,PAR,0,10620,so here we are in Friuli tucked away in a ↫rr↫remote corner of the  Apline foothills in northeastern Italy at a little restaurant .
+57m,PAR,10620,16607,I hafta admit that when I travel history is not the first thing on  my mind .
+57m,PAR,16607,17799,food and wine are .
+57m,PAR,17799,20753,and that's what sold me on Friuli .
+57m,PAR,20753,25288,<it is a> [//] it is famous as a source of some of Italy's best  white wines .
+57m,PAR,25288,31289,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+57m,PAR,31289,47954,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north (.) where  Italy butts up against Austria .
+57m,PAR,47954,53519,directly <to the> [/] to the south is Venice just a little more  than an hour and a half away .
+57m,PAR,53519,53719,though off the beaten tourist track Friuli is hard in the path of  history .
+57m,PAR,53719,68938,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+57m,PAR,68938,72164,as a result things look different here .
+57m,PAR,72164,82355,rather than the familiar cultural overlay of most of Italy the  central European influence is ↫r↫readily apparent in Friuli .
+57m,PAR,82355,88574,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+57m,PAR,88574,93204,here you'll find gray stone castles rather than sun drenched villas  .
+57m,PAR,93204,102102,the people look different too taller and blonder than southern  Italians and with plenty of German and Central European surnames .
+61m,PAR,0,15172,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+61m,PAR,15172,20923,I hafta admit that when I travel history is not the first thing on  my mind [/] mind .
+61m,PAR,20923,23616,food and wine are .
+61m,PAR,23616,26921,and that's what sold me on Friuli .
+61m,PAR,26921,32689,it is famous as a source of some of Italy's best white wines .
+61m,PAR,32689,40825,we went primarily in search of wines unaware that we soon would  make a &+c [/] a culinary detour .
+61m,PAR,40825,59691,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+61m,PAR,59691,65723,directly to the south is Venice just a little more than an hour and  a half away .
+61m,PAR,65723,72663,though off the beaten tourist track Friuli is hard (.) in the path  of history .
+61m,PAR,72663,82238,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+61m,PAR,82238,85623,as a result things look different here .
+61m,PAR,85623,95389,rather than the familiar cultural overlay of most of Italy the  central European influence is readily apparent in Friuli .
+61m,PAR,95389,102549,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+61m,PAR,102549,107788,here you'll find gray stone castles rather than sun drenched villas  .
+61m,PAR,107788,118440,the people look different too taller and blonder than southern  Italians and with plenty of German and Central European surnames .
+61m,PAR,118440,123623,if I ↫t-t↫talked like that (.) I wouldn't be here .
+46ma,PAR,0,4620,alright I'm Subject_Name for take two reading this .
+46ma,PAR,4620,14732,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+46ma,PAR,14732,18960,I hafta admit that when I travel history is not the first thing on  my mind .
+46ma,PAR,18960,20305,food and wine are .
+46ma,PAR,20305,22590,and that's what sold me on Friuli .
+46ma,PAR,22590,26758,it is famous as a source of some of Italy's best white wines .
+46ma,PAR,26758,31709,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+46ma,PAR,31709,45157,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+46ma,PAR,45157,49865,directly to the south is Venice just a little more than an hour and  a half away .
+46ma,PAR,49865,55249,though off the beaten tourist track Friuli is hard in the path of  history .
+46ma,PAR,55249,61662,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+46ma,PAR,61662,64167,as a result things look different here .
+46ma,PAR,64167,71392,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+46ma,PAR,71392,76161,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+46ma,PAR,76161,80049,here you'll find gray stone castles rather than sun drenched villas  .
+46ma,PAR,80049,87755,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+46ma,INV,87755,91619,there we go that was it .
+29ma,PAR,0,12007,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+29ma,PAR,12007,16623,I hafta admit that when I travel history is not the first thing on  my mind .
+29ma,PAR,16623,18206,food and wine are .
+29ma,PAR,18206,20490,and that's what sold me on Friuli .
+29ma,PAR,20490,24159,it is famous as a source of some of Italy's best white wines .
+29ma,PAR,24159,31107,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+29ma,PAR,31107,47009,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+29ma,PAR,47009,51792,directly to the south is Venice just a little more than an hour and  a half away .
+29ma,PAR,51792,57276,though off the beaten tourist track Friuli is hard in the path of  history .
+29ma,PAR,57276,66266,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+29ma,PAR,66266,70293,as a result things look different here .
+29ma,PAR,70293,77844,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+29ma,PAR,77844,83493,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+29ma,PAR,83493,88295,here you'll find gray stone castles rather than sun drenched villas  .
+29ma,PAR,88295,96311,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+27mb,PAR,199,10393,as a young slave she ran away to the north .
+27mb,PAR,10393,15524,but frequently she returned to the south to help other slaves  escape .
+27mb,PAR,15524,23291,she became a famous ↫l-l↫leader of the underground railroad a  secret network of households that provided food and shelter to  runaway slaves .
+27mb,PAR,23291,28639,Harriet led groups of slaves from one point to another on the  perilous journey north .
+27mb,PAR,28639,35624,they traveled only after nightfall ≠hiding during the day in  basements fields and forests .
+27mb,PAR,35624,45208,Harriet was a master of tricks and disguises and at ≠↫o-o↫one time  a r:eward for forty thousand was offered for her capture .
+27mb,PAR,45208,51157,her daring rescues helped ≠hundreds of slaves escape to  ↫fr-fr↫freedom .
+27mb,PAR,51157,58650,↫a-a↫as s:he once s:aid I ↫n↫never lost a passenger .
+62f,PAR,0,10794,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+62f,PAR,10794,15624,I hafta admit that when I travel history is not the first thing on  my mind .
+62f,PAR,15624,17243,food and wine are .
+62f,PAR,17243,20142,and that's what sold me on Friuli .
+62f,PAR,20142,24458,it is famous as a source of some of Italy's best white wines .
+62f,PAR,24458,30160,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+62f,PAR,30160,46811,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+62f,PAR,46811,52161,directly to the south is Venice just a little more than an hour and  a half away .
+62f,PAR,52161,59200,though off the beaten tourist track Friuli is hard in the path of  history .
+62f,PAR,59200,67166,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+62f,PAR,67166,70195,as a result things look different here .
+62f,PAR,70195,80333,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+62f,PAR,80333,86763,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+62f,PAR,86763,91918,here you'll find gray stone castles rather than sun drenched villas  .
+62f,PAR,91918,99971,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+24mb,PAR,0,9578,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+24mb,PAR,9578,13846,I hafta admit that when I travel history is not the first thing on  my mind .
+24mb,PAR,13846,15192,food and wine are .
+24mb,PAR,15192,18315,and that's what sold me on Friuli .
+24mb,PAR,18315,22850,it is famous as a source of some of Italy's best white wines .
+24mb,PAR,22850,27839,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+24mb,PAR,27839,41639,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+24mb,PAR,41639,46258,directly to the south is Venice just a little more than an hour and  a half away .
+24mb,PAR,46258,53447,though off the beaten tourist track Friuli is hard in the path of  history .
+24mb,PAR,53447,61149,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+24mb,PAR,61149,63700,as a result things look different here .
+24mb,PAR,63700,71347,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+24mb,PAR,71347,77174,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+24mb,PAR,77174,81210,here you'll find gray stone castles rather than sun drenched villas  .
+24mb,PAR,81210,88705,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+54f,PAR,0,3042,0 [=! silence] .
+54f,PAR,3042,12776,↫Har↫Harriet Truman &-uh <live it> [//] lived most of her life  working to free her people .
+54f,PAR,12776,19825,≠as a young slave she ran away to the north .
+54f,PAR,19825,25807,frequently she would turn to the south to help others slaves escape  .
+54f,PAR,25807,30622,she became a famous leader of the underground railroad .
+54f,PAR,30622,39192,a s:ecret network of households that provided food and shelter to  runaway s:laves .
+54f,PAR,39192,48706,Harriet led ↫g↫groups of slaves from one point to another on  perilous ≠journey north .
+54f,PAR,48706,53000,they traveled only after [/] after nightfall .
+54f,PAR,53000,58949,hiding during [/] during the day in basements f:ields and forests .
+54f,PAR,58949,64094,Harriet was a master of tricks and disguises .
+54f,PAR,64094,71175,and at one point a reward of f:orty thousand dollars was offered  for her capture .
+54f,PAR,71175,77789,her daring rescues helped hundreds of slaves escape [/] escape to  freedom .
+54f,PAR,77789,83083,as she once said I never lost a passenger .
+27f,PAR,0,12810,so here we are in Friuli tucked away in a remote corner of the  Alpine in northeastern Italy at a little restaurant .
+27f,PAR,12810,17603,I hafta admit that when I travel history is not the first thing on  my mind .
+27f,PAR,17603,19304,food and wine are .
+27f,PAR,19304,22489,and that's what sold me on Friuli .
+27f,PAR,22489,27274,it is famous as a source of some of Italy's best white wines .
+27f,PAR,27274,33625,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+27f,PAR,33625,49775,occupying the extreme north^east corner Friuli's scenery ranges  from rugged coastline along the eastern border to placid plains in  the west and the majestic Alps in the north where Italy butts up  against Australia .
+27f,PAR,49775,55258,directly to the south is Venice just a little more than an hour and  a half away .
+27f,PAR,55258,63291,though off the beaten tourist [/] tourist track Friuli <is hard>  [/] is hard in the path of history .
+27f,PAR,63291,73975,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about ≠everyone who passed by .
+27f,PAR,73975,76423,as a result things look different here .
+27f,PAR,76423,85558,rather than the familiar cultural overlay of most of Italy the  central European influence is readily apparent in Friuli .
+27f,PAR,85558,97823,<the architecture &+tren tends> [//] the architecture tends more  towards Australian grandeur than Tuscan simplicity .
+27f,PAR,97823,103253,here you'll find gray stone castles rather than sun drenched villas  .
+27f,PAR,103253,115615,the people look different too taller and blonder than southern  Italians and with plenty of German and Central European surnames .
+41f,PAR,0,2586,0 [=! silence] .
+41f,PAR,2586,26911,s:o here we are in F:riuli tucked away in a remote corner of the  Alpine f:oothills in northeastern Italy at a l:ittle r:estaurant .
+41f,PAR,26911,35994,I hafta admit that when I travel history is not the f:irst thing on  my mind .
+41f,PAR,35994,38512,f:ood and wine are .
+41f,PAR,38512,44226,and that's what sold me on F:riuli .
+41f,PAR,44226,53210,it is famous as a source of some of ≠Italy's best white wines .
+41f,PAR,53210,76537,we went primarily in search of wines unaware that we soon would  make a ≠↫c-c-c-c-c-c-c-c-c-c↫culinary ≠↫de-de-de-de↫detour .
+41f,PAR,76537,116708,≠occupying the extreme northeast corner of Italy Friuli's s:cenery  ranges from rugged coastlines along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against ≠↫A-A-A-A-A-A-A-A-AA-A-A-A↫A:ustria .
+41f,PAR,116708,130521,directly to the south is ≠↫V-V-V-V-V-V-V-V-V↫V:enice just a little  more than an hour and a half away .
+41f,PAR,130521,144405,though off the ≠beaten ≠↫t-t-t-t↫tourist track Friuli is hard in  the path of history .
+41f,PAR,144405,160621,standing at one of the major crossroads between Western Europe and  the East is was conquered by just about ≠↫e↫e:veryone who passed by  .
+41f,PAR,160621,167237,as a result things look ≠↫d-d-d↫different here .
+41f,PAR,167237,188152,rather than the familiar cultural overlay of most of Italy the  c:entral European influence ≠is readily apparent in Friuli .
+41f,PAR,188152,200291,the architecture tends more toward Austrian gr:andeur than Tuscan  simplicity .
+41f,PAR,200291,208384,here you'll find grey stone castles rather than sun drenched  v:illas .
+41f,PAR,208384,230730,the people look ≠↫d↫different too taller and blonder than southern  Italians and with plenty of German and Central E:uropean s:urnames .
+50fa,PAR,0,11659,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+50fa,PAR,11659,16178,I hafta admit that when I travel history is not the first thing on  my mind .
+50fa,PAR,16178,17479,food and wine are .
+50fa,PAR,17479,19780,and that's what sold me on Friuli .
+50fa,PAR,19780,23402,it is famous as a source of some of Italy's best white wines .
+50fa,PAR,23402,30536,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+50fa,PAR,30536,54512,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+50fa,PAR,54512,59752,directly to the south is Venice just a little more than an hour and  a half away .
+50fa,PAR,59752,64184,though off the beaten tourist track Friuli is hard in the path of  history .
+50fa,PAR,64184,72236,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+50fa,PAR,72236,74687,as a result things look different here .
+50fa,PAR,74687,82843,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+50fa,PAR,82843,88861,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+50fa,PAR,88861,93146,here you'll find gray stone castles rather than sun drenched villas  .
+50fa,PAR,93146,103817,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+26f,PAR,0,9488,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+26f,PAR,9488,13938,I hafta admit that when I travel history is not the first thing on  my mind .
+26f,PAR,13938,15338,food and wine are .
+26f,PAR,15338,17136,and that's what sold me on Friuli .
+26f,PAR,17136,20389,it is famous as a source of some of Italy's best white wines .
+26f,PAR,20389,26355,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+26f,PAR,26355,38673,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+26f,PAR,38673,43339,directly to the south is Venice just a little more than an hour and  a half away .
+26f,PAR,43339,51273,though off the beaten tourist track Friuli is hard in the path of  history .
+26f,PAR,51273,57974,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+26f,PAR,57974,60239,as a result things look different here .
+26f,PAR,60239,67991,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+26f,PAR,67991,72390,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+26f,PAR,72390,76324,here you'll find gray stone castles rather than sun drenched villas  .
+26f,PAR,76324,83142,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+508,PAR,1541,3649,okay &-um .
+508,PAR,3649,10167,Sweeny's department store was having it's twentieth anniversary  celebration on May third .
+508,PAR,10167,12567,and was planning an enormous sales promotion .
+508,PAR,12567,16379,certain sections of the store were having tremendous sales .
+508,PAR,16379,20679,especially the dress department the jewelry department and the  furniture department .
+508,PAR,20679,27559,in_order_to prepare the store workman were moving busily around  carrying lumbar and sawing and hammering .
+508,PAR,27559,32429,they were creating signs displays and shelving for the products  going on sale .
+508,PAR,32429,36614,a newspaper campaign was planned in which the products would be  featured .
+508,PAR,36614,42699,the stores owners hoped that customers would come to celebrate the  twenty years of service to the community .
+508,PAR,42699,46381,and also take advantage offered in many departments .
+508,PAR,46381,50607,they were planning to give away door prizes on each one of the  seven floors .
+508,INV,0,1541,okay .
+508,INV,50607,52690,perfect thank you .
+507,PAR,0,8423,oh &-uh Harriet Tubman lived most of her life working to free her  people .
+507,PAR,8423,11555,as a young slave she ran away to the north .
+507,PAR,11555,16389,but frequently she returned to the south to help other slaves  escape .
+507,PAR,16389,23858,she became a famous leader of the underground railroad .
+507,PAR,23858,31358,a secret network of households that provided food and shelter to  runaway slaves .
+507,PAR,31358,38006,Harriet led groups of slaves from one point to another on the  perilous journey north .
+507,PAR,38006,44957,they traveled only after nightfall hiding during the day in  basements fields and forests .
+507,PAR,44957,53985,Harriet was a master of tricks and disguises and at one time a  reward of forty thousand dollars was offered for her capture .
+507,PAR,53985,59521,her daring rescues helped hundreds of slaves escape to freedom .
+507,PAR,59521,65135,as she once said I have never lost a passenger .
+509,PAR,0,5062,Sweenys department store was having 0a twentieth celebration on may  third .
+509,PAR,5062,7516,I was planning an enormous sales production .
+509,PAR,7516,11397,certain sections of the store were having tremendous sales .
+509,PAR,11397,12849,especially the dress department .
+509,PAR,12849,15617,the jewelery department and furniture department .
+509,PAR,15617,23065,in_order_to prepare the store workmen were moving busily around  carrying lumber and sawing and hammering .
+509,PAR,23065,27779,they were creating signs displays and shelving for their products  going on sale .
+509,PAR,27779,32900,a newspaper campaign was planned in which the products would be  featured .
+509,PAR,32900,43031,the stores owners hoped the customers would come to celebrate the  twenty years of service to the community and also take would  advantage of the bargains offered in many departments .
+509,PAR,43031,47765,they were planning to give away door prizes at each one of the  seven floors .
+62m,PAR,0,9793,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+62m,PAR,9793,14263,I hafta admit that when I travel history is not the first thing on  my mind .
+62m,PAR,14263,15896,food and wine are .
+62m,PAR,15896,18263,and that's what sold me on Friuli .
+62m,PAR,18263,22680,it is famous as a source of some of Italy's best white wines .
+62m,PAR,22680,28987,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+62m,PAR,28987,44426,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+62m,PAR,44426,49712,directly to the south is Venice just a little more than an hour and  a half away .
+62m,PAR,49712,55516,though off the beaten tourist track Friuli is hard in the path of  history .
+62m,PAR,55516,63282,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+62m,PAR,63282,66504,as a result things look different here .
+62m,PAR,66504,74506,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+62m,PAR,74506,81241,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+62m,PAR,81241,85180,here you'll find gray stone castles rather than sun drenched villas  .
+62m,PAR,85180,94184,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+35mb,PAR,199,399,and I read the whole thing ?
+35mb,PAR,399,479,okay .
+35mb,PAR,479,25248,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+35mb,PAR,25248,31136,I hafta admit that when I travel history is not the first thing on  my mind .
+35mb,PAR,31136,34701,food and wine are .
+35mb,PAR,34701,38502,and that's what sold me on Friuli .
+35mb,PAR,38502,38702,<is> [//] am I saying that right ?
+35mb,PAR,38702,38782,okay .
+35mb,PAR,38782,38982,good to know .
+35mb,PAR,38982,53868,it is famous as a source of some of Italy's best white wines .
+35mb,PAR,53868,67854,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+35mb,PAR,67854,97985,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+35mb,PAR,97985,111491,directly to the south is Venice just a little more than an hour and  a half away .
+35mb,PAR,111491,120947,though off the beaten tourist track Friuli is hard in the path of  history .
+35mb,PAR,120947,137901,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+35mb,PAR,137901,141822,as a result things look different here .
+35mb,PAR,141822,167833,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+35mb,PAR,167833,180838,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+35mb,PAR,180838,188112,here you'll find gray stone castles rather than sun drenched villas  .
+35mb,PAR,188112,210673,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+35mb,PAR,210673,212090,okay .
+35mb,INV,199,399,like I said .
+35mb,INV,399,599,I didn't write it .
+35mb,INV,599,679,great .
+503,PAR,0,3121,&-um we must not mess with nature .
+503,PAR,3121,10543,there was once on the sea shore a sea shell which had a strange  power .
+503,PAR,10543,10743,this sea shell had a pearl in it's center .
+503,PAR,10743,15631,the pearl had this power .
+503,PAR,15631,19622,the shell belonged to a magician who lived in a cabin .
+503,PAR,19622,24842,the cabin was hidden in a cave that could be seen when the sea  retreated .
+503,PAR,24842,29585,the cave was full of treasures that no one had ever explored .
+503,PAR,29585,32745,one day a man ventured into this cave .
+503,PAR,32745,39678,he discovered a small rock on a small rock a chest .
+503,PAR,39678,39878,he opened it and found a pearl .
+503,PAR,39878,45835,it was the same pearl as that of the shell .
+503,PAR,45835,48958,she was as bright as the sun .
+503,PAR,48958,49158,the man took the pearl between his fingers .
+503,PAR,49158,57715,the pearl began to turn red and the man burned his hand .
+503,PAR,57715,62587,he understood that he must not mess with nature but respect it .
+503,PAR,62587,65709,it was one of the treasures of the cave .
+29mc,PAR,0,23317,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+29mc,PAR,23317,30160,I hafta admit that when I travel history is not the first thing on  my mind .
+29mc,PAR,30160,31897,food and wine are .
+29mc,PAR,31897,37653,and that's what sold me on Friuli .
+29mc,PAR,37653,44304,it is famous as a source of some of Italy's best white wines .
+29mc,PAR,44304,52607,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+29mc,PAR,52607,76787,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+29mc,PAR,76787,88172,directly to the south is Venice just a little more than an hour and  a half away .
+29mc,PAR,88172,97612,though off the beaten tourist track Friuli is hard in the path of  history .
+29mc,PAR,97612,108002,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+29mc,PAR,108002,114071,as a result things look different here .
+29mc,PAR,114071,124140,rather than the familiar cultural overlay of most of Italy the  central European influence is readily apparent in Friuli .
+29mc,PAR,124140,133111,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+29mc,PAR,133111,139232,here you'll find gray stone castles rather than sun-drenched villas  .
+29mc,PAR,139232,154088,the people look different too taller and blonder than southern  Italians and with plenty of German and Central European surnames .
+60m,PAR,0,12208,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+60m,PAR,12208,18074,I hafta admit that when I travel history is not the first thing on  my mind .
+60m,PAR,18074,20110,food and wine are .
+60m,PAR,20110,25041,and that's what sold me on Friuli .
+60m,PAR,25041,31877,it is famous as a source of some of Italy's best white wines .
+60m,PAR,31877,39227,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+60m,PAR,39227,56895,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+60m,PAR,56895,65111,directly to the south is Venice just a little more than an hour and  a half away .
+60m,PAR,65111,74774,though off the beaten tourist track Friuli is hard in the path of  history .
+60m,PAR,74774,83180,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+60m,PAR,83180,86030,as a result things look different here .
+60m,PAR,86030,95391,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+60m,PAR,95391,104781,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+60m,PAR,104781,109532,here you'll find gray stone castles rather than sun drenched villas  .
+60m,PAR,109532,120750,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+33m,PAR,4,24903,so here we are in F:riuli tucked away in a remote corner of the  Alpine foothills in northeastern ≠↫I-I-I-I-I-I↫Italy at a little  r:estaurant .
+33m,PAR,24903,30419,I [/] I hafta admit that when I travel history is not the first  thing on my mind .
+33m,PAR,30419,31623,food and wine are .
+33m,PAR,31623,31823,and that's what sold me on F:riuli .
+33m,PAR,31823,37516,it is famous as a source of some of Italy's best white wines .
+33m,PAR,37516,44298,we went primarily in search of wines unaware that we soon would  make a culinary ≠detour .
+33m,PAR,44298,92065,≠↫o-o-o-o-o-o↫occupying the extreme northeast corner of  ≠↫I-I-I-I-I-I-I-I-I-I↫Italy ≠Friuli's ↫s-s-s-s-s-s-s-s↫scenery  r:anges from rugged coastline along the eastern border to [/] to  ≠placid plains in the west and the majestic Alps ↫i-i-i-i-i-i↫in the  north where ↫I↫Italy butts up against ↫Au↫Austria .
+33m,PAR,92065,102582,directly to the south is ↫V-V-V-V-V-V↫V:enice just a little more  than an hour and a half away .
+33m,PAR,102582,113866,though off t:he beaten tourist tract [//] track ↫F-F-F↫Friuli is  hard in the path of [/] of ≠history .
+33m,PAR,113866,120531,standing at one of the major crossroads between Western Europe and  the east is was conquered by just about everyone who passed by .
+33m,PAR,120531,125231,as a result things look &-d things look d:ifferent here .
+33m,PAR,125231,147145,rather than the ↫f↫f:amiliar ≠cultural overlay of most of  ≠↫I-I-I-I-I-I-I-I-I-I-I-I↫Italy the [/] the central European  influence is readily apparent in F:riuli .
+33m,PAR,147145,165597,the [/] ↫th-th↫the architecture tends <more towards> [//] more  toward ≠↫Au-Au↫Austrian ↫gra-gra↫grandeur than ≠Tuscan  ↫s-s-s-s-s-s-s-s-s-s-s↫simplicity .
+33m,PAR,165597,176969,here you find grey stone ≠castles rather than sun drenched  ↫v-v-v-v-v-v-v↫v:illas .
+33m,PAR,176969,216681,the [/] ≠th:e people look ≠↫d-d-d↫different too taller and &+≠b and  [/] ≠↫aa↫and blonder than southern ↫I↫Italians and with plenty of  German and Central European ↫s-s-s-s-s-s↫s:urnames .
+29mb,PAR,79,16391,so here we are in Friuli tucked away in a remote corner of the  Alpine foothills in northeastern Italy at a little restaurant .
+29mb,PAR,16391,23378,I hafta admit that when I travel history is not the first thing on  my mind .
+29mb,PAR,23378,25496,food and wine are .
+29mb,PAR,25496,29298,and that's what sold me on Friuli .
+29mb,PAR,29298,34849,it is famous as a source of some of Italy's best white wines .
+29mb,PAR,34849,43804,we went primarily in search of wines unaware that we soon would  make a culinary detour .
+29mb,PAR,43804,63163,occupying the extreme northeast corner of Italy Friuli's scenery  ranges from rugged coastline along the eastern border to placid  plains in the west and the majestic Alps in the north where Italy  butts up against Austria .
+29mb,PAR,63163,70434,directly to the south is Venice just a little more than an hour and  a half away .
+29mb,PAR,70434,77337,though off the beaten tourist track Friuli is hard in the path of  history .
+29mb,PAR,77337,86341,standing at one of the major crossroads between Western Europe and  the East it was conquered by just about everyone who passed by .
+29mb,PAR,86341,90010,as a result things look different here .
+29mb,PAR,90010,100948,"rather than the familiar cultural overlay of most of Italy, the  central European influence is readily apparent in Friuli ."
+29mb,PAR,100948,110805,the architecture tends more toward Austrian grandeur than Tuscan  simplicity .
+29mb,PAR,110805,117023,here you'll find gray stone castles rather than sun drenched villas  .
+29mb,PAR,117023,128494,"the people look different too taller and blonder than southern  Italians, and with plenty of German and Central European surnames ."
+29mb,INV,79,84,go .
+29mb,INV,128494,130345,that's perfect .
+39f,PAR,0,2531,okay .
+39f,PAR,2531,30602,"+"" so [/] so here [/] here [/] here we &-like are [/] are &-like in  [/] in Friuli &+tuck &-like tucked away [/] away in &-like a remote  &-um &-what's &-the &-like &-a corner &-a corner &-say of the  ↫A↫Alpine &-like &-like &+foot &-like foothills &-say in northern  ↫e-e-e↫eastern &-like ↫I-I↫Italy at a little ↫re-re-re↫restaurant ."
+39f,PAR,30602,42700,"+"" I hafta &-like ↫a↫admit that when I [/] I travel ↫hi-hi↫history  <is not> [/] (.) is not &-like the first thing [/] (.) thing on my  mind ."
+39f,PAR,42700,44717,"+"" food &-say and wine are [/] are ."
+39f,PAR,44717,49719,"+"" &-say and that's what sold me &-the me on Friuli ."
+39f,PAR,49719,60467,"+"" it's &-like &-a famous as a source of some of &-like  ↫I-I↫Italy's best &-um &-like ↫wi↫white ↫w-w↫wines ."
+39f,PAR,60467,75544,"+"" we went ↫pr-pr-pr↫primarily in search of wines unaware that we  &-↫li↫like soon &-um would make [/] make a culinary ↫de↫detour ."
+39f,PAR,75544,114276,"+"" &-uh &-I occupying the &-like ↫e↫extreme north &-like east &-uh  &-whatchamacallit corner of &-like ↫I-I↫Italy &+f &+f &-like Friuli  ↫sc-sc↫scenery ranges from ↫ru-ru↫rugged coastline ↫a-a-a↫along the  &-like ↫e-e↫eastern &-uh ↫bor-bor↫border to ↫pl-pl↫placid plains in  &-like the [/] the [/] the west and the ↫ma-ma-ma↫majestic ↫Al↫Alps  &+say in the north [/] north [/] north where &-like ↫I↫Italy &+butt  &+butt &+like butts up &-say against &-uh Australia ."
+39f,PAR,114276,122278,"+"" &-like directly to the south is &-like Venice just &-like a  little more than &-like an hour and half &-like ↫a↫away ."
+39f,PAR,122278,140034,"+"" though off the &-whatchamacallit the beaten tourist track Friuli  ↫i-i↫is [/] is &-um ↫har-har↫hard [/] hard in the &+↫pa-pa-pa↫pa [/]  the path of &-like ↫hi-hi-hi↫history ."
+39f,PAR,140034,159926,"+"" ↫sta↫standing [/] standing at one &-like one [/] one of the  major xxx &-like roads between ↫W-W-W↫Western Europe and the ↫E↫East  it was &-like ↫c-c↫conquered by just about &-like ↫e-e↫everyone who  passed by ."
+39f,PAR,159926,163912,"+"" as &-like a result things look &-like different here ."
+39f,PAR,163912,179442,"+"" rather than the &-like familiar &-↫l↫like cultural &-like  ↫o-o↫overlay of most of &-like ↫I-It-It↫Italy the central &-like  ↫Eu↫European &-like influence is &-like ↫re↫readily apparent in  Friuli ."
+39f,PAR,179442,194159,"+"" the &-like ↫ar-ar↫architecture &-um &-whatchamacallit tends more  toward &-like ↫Au↫Austrian grandeur than &-like &+t &-like Tuscan  &-like &+simpl &-like &-like &-like &-whatchamacallit simplicity ."
+39f,PAR,194159,203059,"+"" her:e &-like ↫you-you-you↫you'll find gray &-like stone  &-↫li↫like castles rather than sun &-like drenched villas ."
+39f,PAR,203059,224724,"+"" the people &-like look &-like different &-um &-like  &-whatchamacallit &-like too taller and &-like ↫bl-bl↫blonder than  southern ↫I-I-I-I↫Italians and with plenty of &-like &-like German  and &-like Central &-like ↫Eu-Eu↫European ↫sur↫surnames ."

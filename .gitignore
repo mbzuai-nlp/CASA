@@ -1,0 +1,9 @@
+./datasets
+output
+_tmp*
+cookies.txt
+data/clips
+**videos**
+**wavs**
+
+**__pycache__**
