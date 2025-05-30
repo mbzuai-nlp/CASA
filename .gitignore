@@ -7,3 +7,5 @@ data/clips
 **wavs**
 
 **__pycache__**
+
+prepare_pyannote.py

@@ -93,8 +93,9 @@ To train the models, use the following command
 ```bash
 python train.py \
     --modality audio \ # audio, video, multimodal
-    --dataset_root "/path/to/dataset/dir" \ 
-    --output_dir "/path/to/output" \ # the overlap window
+    --dataset_root "/path/to/dataset/dir" \
+    --dataset_annotator "BAU" \ #eg annotator to use to train the models
+    --output_dir "/path/to/output" \ 
 ```
 
 ## Notes

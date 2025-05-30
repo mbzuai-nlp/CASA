@@ -7,17 +7,6 @@ It uses your authenticated session via a `cookies.txt` file exported from your b
 
 ---
 
-### Requirements
-
-- Python 3.7+
-- Install dependencies:
-
-```bash
-pip install requests beautifulsoup4
-```
-
----
-
 ### Step 1: Log In and Export Cookies
 
 1. Go to [talkbank](https://media.talkbank.org) and log in.

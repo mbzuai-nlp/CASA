@@ -14,10 +14,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train a stuttering detection model")
     # dataset arguments
     parser.add_argument('--dataset_root', type=str, default='data/clips', help='Root directory for dataset')
-    parser.add_argument('--dataset_label_path', type=str, default='data/clips/labels/A1_labels.csv', help='Path to the label file')
-    parser.add_argument('--dataset_label', type=str, default='SR', help='Label to use for training')
-    parser.add_argument('--dataset_feature_dir', type=str, default='features', help='Directory to save features')
-    parser.add_argument('--dataset_precompute', type=bool, default=True, help='Precompute features')
+    parser.add_argument('--dataset_annotator', type=str, default='BAU', help='Path to the label file')
+    parser.add_argument('--dataset_label', type=str, default=None, help='Label to use for upsampling')
     parser.add_argument('--dataset_sampling_rate', type=int, default=16000, help='Sampling rate for audio')
     # audio model arguments 
     parser.add_argument('--audio_pretrained_model_name', type=str, default='facebook/wav2vec2-base-960h', help='Pretrained audio model name')
@@ -36,7 +34,7 @@ def parse_args():
 
     # training arguments
     parser.add_argument('--seed', type=int, default=42, help='Random seed for training')
-    parser.add_argument('--batch_size', type=int, default=100, help='Batch size for training')
+    parser.add_argument('--batch_size', type=int, default=8, help='Batch size for training')
     parser.add_argument('--num_workers', type=int, default=4, help='Number of workers for data loading')
     parser.add_argument('--max_epochs', type=int, default=30, help='Maximum number of epochs for training')
     parser.add_argument('--gradient_clip_val', type=float, default=1.0, help='Gradient clipping value')

@@ -7,6 +7,13 @@ import uuid
 import hashlib  # <-- Add for deterministic clip IDs
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm.auto import tqdm  # Change to tqdm.auto for better notebook compatibility
+import torch
+import torchvision
+from typing import Dict
+from transformers import Wav2Vec2Processor, VivitImageProcessor
+
+video_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinetics400")
+audio_processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
 
 def agg_fn():
     return{
@@ -31,15 +38,7 @@ def agg_fn():
     }
 
 def load_exclusions(exclusions_path):
-    """
-    Load segments to be excluded from processing.
-    
-    Args:
-        exclusions_path: Path to the exclusions CSV file
-        
-    Returns:
-        Dict mapping media_file to list of (start, end) tuples
-    """
+
     exclusions = {}
     if os.path.exists(exclusions_path):
         df = pd.read_csv(exclusions_path)
@@ -50,17 +49,7 @@ def load_exclusions(exclusions_path):
     return exclusions
 
 def is_segment_excluded(start_time, end_time, excluded_segments):
-    """
-    Check if a time segment overlaps with any excluded segments.
-    
-    Args:
-        start_time: Start time of segment to check
-        end_time: End time of segment to check
-        excluded_segments: List of (start, end) tuples representing excluded segments
-        
-    Returns:
-        Boolean indicating if segment should be excluded
-    """
+
     if excluded_segments is None:
         return False
         
@@ -70,9 +59,33 @@ def is_segment_excluded(start_time, end_time, excluded_segments):
             return True
     return False
 
+def _process_audio(audio: str, processor) -> Dict[str, torch.Tensor]:
+    """Process audio file using Wav2Vec2 processor"""
+    
+    # Convert to mono if stereo
+    if audio.shape[0] > 1:
+        audio = torch.mean(audio, dim=0, keepdim=True)
+        
+    # Process with Wav2Vec2 processor
+    processed = processor(
+        audio.numpy().astype(np.float32),  
+        sampling_rate=16000,  # Ensure consistent sampling rate
+        return_tensors="pt",
+    )
+    
+    return processed
+
+def sample_frame_indices(clip_len, frame_sample_rate, seg_len):
+    converted_len = int(clip_len * frame_sample_rate)
+    end_idx = np.random.randint(converted_len, seg_len)
+    start_idx = end_idx - converted_len
+    indices = np.linspace(start_idx, end_idx, num=clip_len)
+    indices = np.clip(indices, start_idx, end_idx - 1).astype(np.int64)
+    return indices
+
+
 # Add global caches
 audio_cache = {}
-video_cache = {}
 
 def get_audio_segment(video_path):
     """
@@ -83,13 +96,6 @@ def get_audio_segment(video_path):
         audio_cache[video_path] = audio_segment.set_frame_rate(16000)  # Ensure consistent frame rate
     return audio_cache[video_path]
 
-def get_video_capture(video_path):
-    """
-    Retrieve cv2.VideoCapture from cache or load if not present.
-    """
-    if video_path not in video_cache:
-        video_cache[video_path] = cv2.VideoCapture(video_path)
-    return video_cache[video_path]
 
 def process_clip(args):
     """
@@ -102,8 +108,13 @@ def process_clip(args):
         # Use cached audio
         audio = get_audio_segment(video_path)
         audio_clip = audio.set_frame_rate(16000)[int(start_time*1000):int(end_time*1000)]
+        audio_features = _process_audio(audio_clip.get_array_of_samples(), audio_processor)
+
         audio_output_dir = os.path.join(output_dir, 'audios')
-        audio_clip.export(os.path.join(audio_output_dir, f'{clip_id}.wav'), format="wav")
+        torch.save(
+            audio_features,
+            os.path.join(audio_output_dir, f'{clip_id}_audio.pt')
+        )
 
         # Use PyAV for video processing
         video_output_dir = os.path.join(output_dir, 'videos')
@@ -161,13 +172,11 @@ def deterministic_clip_id(media_file, start_time, end_time, clip_duration):
     id_str = f"{media_file}_{start_time:.3f}_{end_time:.3f}_{clip_duration}"
     return hashlib.md5(id_str.encode('utf-8')).hexdigest()
 
-def process_video_clips(args):
+def process_video(args):
     """
-    Process all clips for a single video file in one thread, including audio.
-    Uses OpenCV for video processing.
+    Process all clips for a single video file in one thread, extracting audio and video features.
+    Uses PyAV for video processing and saves preprocessed features directly without saving MP4 files.
     """
-    import cv2  # Local import to avoid global dependency if not needed elsewhere
-
     media_file, task, group, excluded_segments, video_path, output_dir, clip_duration, overlap, segment_to_clip_map = args
     
     successful_clips = set()
@@ -191,48 +200,59 @@ def process_video_clips(args):
         segment_key = (media_file, start_time, end_time)
         segment_to_clip_map[segment_key] = clip_id
         video_clips.append((clip_id, start_time, end_time))
-
-    # if output dir not empty return early
-    # if os.path.exists(video_output_dir) and os.listdir(video_output_dir):
-    #     return video_clips, set([clip_id for clip_id, _, _ in video_clips])
     
-    # Process video and audio with OpenCV and pydub in the same thread
+    # Process video and audio with PyAV and save preprocessed features
     try:
-        video = cv2.VideoCapture(video_path)
-        fps = video.get(cv2.CAP_PROP_FPS)
-        width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
-        height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        with av.open(video_path) as container:
+            video_stream = next(s for s in container.streams if s.type == 'video')
+            fps = float(video_stream.average_rate)
 
-        for clip_id, start_time, end_time in video_clips:
-            # Audio (process and export within this thread)
-            audio_clip = audio[int(start_time*1000):int(end_time*1000)]
-            audio_clip.export(os.path.join(audio_output_dir, f'{clip_id}.wav'), format="wav")
+            for clip_id, start_time, end_time in video_clips:
+                # Process and save audio features
+                audio_clip = audio[int(start_time*1000):int(end_time*1000)]
+                audio_array = torch.tensor(audio_clip.get_array_of_samples())
+              
+                audio_features = _process_audio(audio_array.unsqueeze(0), audio_processor)
+                torch.save(
+                    audio_features,
+                    os.path.join(audio_output_dir, f'{clip_id}.pt')
+                )
 
-            # Video
-            output_video_path = os.path.join(video_output_dir, f'{clip_id}.mp4')
-            out_video = cv2.VideoWriter(
-                output_video_path,
-                cv2.VideoWriter_fourcc(*'mp4v'),
-                fps,
-                (width, height)
-            )
-
-            start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps)
-            video.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
-            frames_written = 0
-            total_frames = end_frame - start_frame
-
-            for _ in range(total_frames):
-                ret, frame = video.read()
-                if not ret:
-                    break
-                out_video.write(frame)
-                frames_written += 1
-
-            out_video.release()
-            successful_clips.add(clip_id)
-        video.release()
+                # Extract frames directly for video features
+                start_frame = int(start_time * fps)
+                end_frame = int(end_time * fps)
+                frames_to_extract = end_frame - start_frame
+                # Extract frames needed for video features
+                container.seek(int(start_time * 1000000), any_frame=False, stream=video_stream)
+                
+                frames = []
+                for i, frame in enumerate(container.decode(video=0)):
+                    if i >= frames_to_extract:
+                        break
+                    # Convert PyAV frame to numpy array
+                    frame_array = frame.to_ndarray(format="rgb24")
+                    frames.append(frame_array)
+                
+                if len(frames) < 32:  # Pad if we don't have enough frames
+                    last_frame = frames[-1] if frames else np.zeros((video_stream.height, video_stream.width, 3), dtype=np.uint8)
+                    frames.extend([last_frame] * (32 - len(frames)))
+                
+                # Sample or trim to exactly 32 frames
+                if len(frames) != 32:
+                    indices = np.linspace(0, len(frames) - 1, 32).astype(int)
+                    frames = [frames[i] for i in indices]
+                
+                # Convert frames to PIL images for the processor
+                pil_frames = [torchvision.transforms.ToPILImage()(torch.from_numpy(frame).permute(2,0,1)) for frame in frames]
+                
+                video_features = video_processor(images=pil_frames, return_tensors="pt")
+                torch.save(
+                    video_features,
+                    os.path.join(video_output_dir, f'{clip_id}.pt')
+                )
+        
+                successful_clips.add(clip_id)
+                
     except Exception as e:
         print(f"Error processing video {video_path}: {str(e)}")
 
@@ -277,7 +297,7 @@ def create_overlapping_clips(input_df, base_path, output_dir='clips', clip_durat
     all_video_clips = []
     all_successful_clips = set()
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(process_video_clips, args) for args in video_args]
+        futures = [executor.submit(process_video, args) for args in video_args]
         with tqdm(total=len(futures), desc="Processing videos") as pbar:
             for future in as_completed(futures):
                 video_clips, successful_clips = future.result()
@@ -378,7 +398,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    csv_path = os.path.join(args.root_dir, '_tmp_total_dataset.csv')
+    csv_path = os.path.join(args.root_dir, '_tmp.csv')
     df = pd.read_csv(csv_path)
     # conver start and end times to seconds
     df['start'] = df['start'] / 1000

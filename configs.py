@@ -5,13 +5,9 @@ from typing import List, Optional
 @dataclass
 class DatasetConfig:
     root: str = 'data/clips'
-    label_path: str = 'data/clips/labels/A1_labels.csv'
-    # gold_label_path: Optional[str] = None  # Optional path for gold labels
-    # use_gold: bool = False  # Use gold labels if available
-    feature_dir: str = 'features'
-    precompute: bool = True
+    annotator: str = 'A1'
     sampling_rate: int = 16000
-    label: str = 'ISR'
+    label: str = None
     
 
 # model configurations
@@ -48,6 +44,14 @@ class VideoModelConfig(BaseModelConfig):
     freeze_backbone: bool = True
     unfreeze_last_n_layers: int = 2
     learning_rate: float = 1e-5  # Override with lower default rate for video
+    loss_weights: List[float] = field(default_factory=lambda: [
+        # 0.9,  # SR
+        # 0.7,  # ISR
+        # 0.9,  # MUR
+        # 0.9,  # P
+        # 0.6,  # B
+        1.0,  # any
+    ])
 
 
 @dataclass
@@ -56,6 +60,14 @@ class MultimodalModelConfig(BaseModelConfig):
     video_config: VideoModelConfig = VideoModelConfig()
     fusion_method: str = "concat"
     fusion_dim: int = 512  # Default fusion dimension, can be adjusted based on model output sizes
+    loss_weights: List[float] = field(default_factory=lambda: [
+        # 0.9,  # SR
+        # 0.7,  # ISR
+        # 0.9,  # MUR
+        # 0.9,  # P
+        # 0.6,  # B
+        1.0,  # any
+    ])
 
 @dataclass
 class TrainingConfig:

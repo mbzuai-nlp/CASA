@@ -12,14 +12,18 @@ from abc import ABC, abstractmethod
 from configs import AudioModelConfig, VideoModelConfig, MultimodalModelConfig, BaseModelConfig, TrainingConfig
 from huggingface_hub import hf_hub_download
 
+def _masked_mean(self, hidden_states: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
+    """Compute mean pooling with attention mask"""
+    # Extend mask to same shape as hidden states
+    mask = attention_mask.unsqueeze(-1).expand(hidden_states.size())
+    masked_sum = torch.sum(hidden_states * mask, dim=1)
+    mask_sum = torch.sum(mask, dim=1)
+    mask_sum = torch.clamp(mask_sum, min=1e-9)
+    
+    return masked_sum / mask_sum
 
 class BaseModule(pl.LightningModule, ABC):
-    """
-    Base PyTorch Lightning module 
-    
-    This abstract base class contains common functionality for both
-    audio and video-based stuttering detection models.
-    """
+
     @classmethod
     def from_pretrained(cls, pretrained_model_name_or_path: str, **kwargs):
         """
@@ -54,7 +58,6 @@ class BaseModule(pl.LightningModule, ABC):
         self.backbone = None
         self.classifier = None
         
-        # Initialize metrics
         self.train_accuracy = torchmetrics.Accuracy(task='binary', num_labels=len(config.label_names))
         self.val_accuracy = torchmetrics.Accuracy(task='binary', num_labels=len(config.label_names))
         self.test_accuracy = torchmetrics.Accuracy(task='binary', num_labels=len(config.label_names))
@@ -69,18 +72,15 @@ class BaseModule(pl.LightningModule, ABC):
             self.per_class_metrics[f"test/f1_{label}"] = torchmetrics.F1Score(task='binary', num_classes=1)
 
         
-        # Store hyperparameters
         self.learning_rate = config.learning_rate
         self.weight_decay = config.weight_decay
         self.scheduler_eta_min = config.scheduler_eta_min
     
     @abstractmethod
     def forward(self, **kwargs) -> Dict[str, torch.Tensor]:
-        """Abstract forward method to be implemented by child classes"""
         pass
     
     def print_trainable_parameters(self):
-        """Print the number of trainable parameters"""
         trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         total_params = sum(p.numel() for p in self.parameters())
         print(f"Trainable parameters: {trainable_params:,} of {total_params:,} "
@@ -172,12 +172,6 @@ class BaseModule(pl.LightningModule, ABC):
 
     @abstractmethod
     def _prepare_batch(self, batch) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
-        """
-        Abstract method to prepare inputs and labels from batch
-        
-        Returns:
-            Tuple of (inputs_dict, labels_tensor)
-        """
         pass
     
     def training_step(self, batch, batch_idx):
@@ -191,14 +185,12 @@ class BaseModule(pl.LightningModule, ABC):
     
     def configure_optimizers(self):
         """Configure optimizer and scheduler"""
-        # Only optimize trainable parameters
         optimizer = AdamW(
             [p for p in self.parameters() if p.requires_grad],
             lr=self.learning_rate,
             weight_decay=self.weight_decay
         )
         
-        # Scheduler
         scheduler = {
             "scheduler": CosineAnnealingLR(
                 optimizer,
@@ -223,28 +215,22 @@ class BaseModule(pl.LightningModule, ABC):
             probs = torch.sigmoid(logits)
             preds = probs > 0.5
         
-        # Create readable results
         results = {}
         for i, label in enumerate(self.label_names):
             results[label] = {
                 "probability": probs[0, i].item(),
                 "prediction": preds[0, i].item()
             }
-        
-        # Add "any" prediction (if any stuttering pattern is detected)
-        results["any"] = {
-            "prediction": preds.any().item()
-        }
+
         
         return results
     
     @abstractmethod
     def _prepare_prediction_inputs(self, inputs: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        """Abstract method to prepare inputs for prediction"""
         pass
 
 class AudioClassificationModule(BaseModule):
-    """Wav2Vec2-based stuttering detection model"""
+    """Wav2Vec2-based stuttering classification model"""
 
     def __init__(self, config: AudioModelConfig):
         super().__init__(config)
@@ -273,7 +259,6 @@ class AudioClassificationModule(BaseModule):
         
         self.classifier = nn.ModuleDict()
         for label in self.label_names:
-            # parallel classification heads for each label
             self.classifier[label] = nn.Sequential(
                 nn.Linear(hidden_size, hidden_size),
                 nn.LayerNorm(hidden_size),
@@ -282,7 +267,6 @@ class AudioClassificationModule(BaseModule):
                 nn.Linear(hidden_size, 1)  # Binary classification for each label
             )
         
-        # Print parameter stats
         self.print_trainable_parameters()
     
     def freeze_feature_extraction(self):
@@ -308,7 +292,6 @@ class AudioClassificationModule(BaseModule):
     ) -> Dict[str, torch.Tensor]:
         """Forward pass for audio model"""
 
-        # Get wav2vec outputs
         outputs = self.backbone(
             input_values=input_values,
             attention_mask=attention_mask,
@@ -336,28 +319,11 @@ class AudioClassificationModule(BaseModule):
             "pooled_output": pooled,
             "hidden_states": outputs.hidden_states
         }
-    
-    def _masked_mean(self, hidden_states: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
-        """Compute mean pooling with attention mask"""
-        # Extend mask to same shape as hidden states
-        mask = attention_mask.unsqueeze(-1).expand(hidden_states.size())
-        
-        # Masked sum
-        masked_sum = torch.sum(hidden_states * mask, dim=1)
-        
-        # Sum of mask
-        mask_sum = torch.sum(mask, dim=1)
-        
-        # Avoid division by zero
-        mask_sum = torch.clamp(mask_sum, min=1e-9)
-        
-        # Masked mean
-        return masked_sum / mask_sum
-    
+
     def _prepare_batch(self, batch) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
         """Prepare audio inputs and labels from batch"""
-        audio_inputs = batch["audio_inputs"]
-        input_values = audio_inputs["input_values"].squeeze(1)  # (B, 1, T)
+        audio_inputs = batch["audio_inputs"] # (B, 1, T)
+        input_values = audio_inputs["input_values"].squeeze(1)  # (B, T)
         attention_mask = audio_inputs.get("attention_mask", None)
         
         inputs = {"input_values": input_values}
@@ -369,7 +335,7 @@ class AudioClassificationModule(BaseModule):
         return inputs, labels
     
     def _prepare_prediction_inputs(self, inputs: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        """Prepare audio inputs for prediction"""
+
         input_values = inputs["input_values"].to(self.device)
         
         prepared_inputs = {"input_values": input_values}
@@ -379,7 +345,7 @@ class AudioClassificationModule(BaseModule):
         return prepared_inputs
 
 class VideoClassificationModule(BaseModule):
-    """ViVIT-based stuttering detection model"""
+    """ViVIT-based stuttering classification model"""
     
     def __init__(self, config: VideoModelConfig):
         super().__init__(config)
@@ -398,16 +364,18 @@ class VideoClassificationModule(BaseModule):
             if config.unfreeze_last_n_layers > 0:
                 self.unfreeze_last_n_layers(config.unfreeze_last_n_layers)
         
-        # Classification head
-        self.classifier = nn.Sequential(
-            nn.Linear(hidden_size, hidden_size),
-            nn.LayerNorm(hidden_size),
-            nn.GELU(),
-            nn.Dropout(config.dropout),
-            nn.Linear(hidden_size, config.num_labels)
-        )
+        self.classifier = nn.ModuleDict()
+        for label in config.label_names:
+            # Create a separate classification head for each label
+            self.classifier[label] = nn.Sequential(
+                nn.Linear(hidden_size, hidden_size),
+                nn.LayerNorm(hidden_size),
+                nn.GELU(),
+                nn.Dropout(config.dropout),
+                nn.Linear(hidden_size, 1)  # Binary classification for each label
+            )
+
         
-        # Print parameter stats
         self.print_trainable_parameters()
     
     def freeze_backbone(self):
@@ -429,7 +397,7 @@ class VideoClassificationModule(BaseModule):
         """Forward pass for video model"""
         # Get ViVIT outputs
         outputs = self.backbone(
-            pixel_values=pixel_values,
+            pixel_values=pixel_values.squeeze(1),  # (B, C, T, H, W) -> (B, T, C, H, W)
             output_hidden_states=True,
         )
         
@@ -437,12 +405,16 @@ class VideoClassificationModule(BaseModule):
         pooled_output = outputs.pooler_output  # [batch_size, hidden_size]
         
         # Classification head
-        logits = self.classifier(pooled_output)  # [batch_size, num_labels]
+        logits = {}
+        for label, head in self.classifier.items():
+            logits[label] = head(pooled_output)
+        
+        logits = torch.cat([logits[label] for label in self.label_names], dim=1)
         
         return {
             "logits": logits,
-            "pooled_output": pooled_output,
-            "hidden_states": outputs.hidden_states
+            # "pooled_output": pooled_output,
+            # "hidden_states": outputs.hidden_states
         }
     
     def _prepare_batch(self, batch) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
@@ -578,51 +550,24 @@ class MultimodalClassificationModule(BaseModule):
         
         return {
             "logits": logits,
-            "pooled_output": fused_features,
-            "audio_pooled": audio_pooled,
-            "video_pooled": video_pooled,
-            "audio_hidden_states": audio_outputs.hidden_states,
-            "video_hidden_states": video_outputs.hidden_states
+            # "pooled_output": fused_features,
+            # "audio_pooled": audio_pooled,
+            # "video_pooled": video_pooled,
+            # "audio_hidden_states": audio_outputs.hidden_states,
+            # "video_hidden_states": video_outputs.hidden_states
         }
-    
-    def _masked_mean(self, hidden_states: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
-        """Compute mean pooling with attention mask"""
-        # Extend mask to same shape as hidden states
-        mask = attention_mask.unsqueeze(-1).expand(hidden_states.size())
-        
-        # Masked sum
-        masked_sum = torch.sum(hidden_states * mask, dim=1)
-        
-        # Sum of mask
-        mask_sum = torch.sum(mask, dim=1)
-        
-        # Avoid division by zero
-        mask_sum = torch.clamp(mask_sum, min=1e-9)
-        
-        # Masked mean
-        return masked_sum / mask_sum
     
     def _prepare_batch(self, batch) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
         """Prepare multimodal inputs and labels from batch"""
-        # Get audio inputs
-        audio_inputs = batch["audio_inputs"]
-        input_values = audio_inputs["input_values"]
-        attention_mask = audio_inputs.get("attention_mask", None)
-        
-        # Get video inputs
-        video_inputs = batch["video_inputs"]
-        pixel_values = video_inputs[" "]
-        
+
         # Prepare inputs dict
         inputs = {
-            "input_values": input_values,
-            "pixel_values": pixel_values
+            "input_values": batch["audio_inputs"]["input_values"].squeeze(1),  # (B, T)
+            "pixel_values": batch["video_inputs"]["pixel_values"].squeeze(1)  # (B, T, C, H, W)
         }
         
-        if attention_mask is not None:
-            inputs["attention_mask"] = attention_mask
+        inputs["attention_mask"] = batch["audio_inputs"].get(["attention_mask"], None)
             
-        # Get labels
         labels = self._get_labels_tensor(batch)
         
         return inputs, labels
