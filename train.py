@@ -34,7 +34,7 @@ def parse_args():
 
     # training arguments
     parser.add_argument('--seed', type=int, default=42, help='Random seed for training')
-    parser.add_argument('--batch_size', type=int, default=8, help='Batch size for training')
+    parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training')
     parser.add_argument('--num_workers', type=int, default=4, help='Number of workers for data loading')
     parser.add_argument('--max_epochs', type=int, default=30, help='Maximum number of epochs for training')
     parser.add_argument('--gradient_clip_val', type=float, default=1.0, help='Gradient clipping value')

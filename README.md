@@ -93,7 +93,7 @@ To train the models, use the following command
 python train.py \
     --modality audio \ # audio, video, multimodal
     --dataset_root "/path/to/dataset/dir" \
-    --dataset_annotator "BAU" \ #eg annotator to use to train the models
+    --dataset_annotator "bau" \ #eg annotator to use to train the models
     --output_dir "/path/to/output" \ 
 ```
 
