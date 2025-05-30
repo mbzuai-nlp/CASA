@@ -119,6 +119,9 @@ class AudioDataset(BaseDataset):
 
         if os.path.exists(audio_path):
             audio = self.read_h5(audio_path, clip_id)
+            if audio['input_values'].shape[1] < 480000:
+                print(f"{clip_id} {audio['input_values'].shape[1]} ")
+                # 
         else:
             print(f"Audio file not found for clip {clip_id}")
             audio = torch.zeros(1, self.target_sampling_rate)  # Default to empty audio
@@ -189,7 +192,6 @@ class VideoAudioDataset(BaseDataset):
         audio_inputs = self.read_h5(audio_path, clip_id) 
         video_inputs = self.read_h5(video_path, clip_id)
         label = self.process_label(clip_data)
-        breakpoint()
         return {
             "clip_id": clip_id,
             "audio_inputs": audio_inputs,

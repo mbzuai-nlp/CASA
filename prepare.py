@@ -2,11 +2,10 @@ import os
 import pandas as pd
 import numpy as np
 from pydub import AudioSegment
-import av  # <-- Use PyAV instead of OpenCV for video
-import uuid
-import hashlib  # <-- Add for deterministic clip IDs
+import av  
+import hashlib  
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from tqdm.auto import tqdm  # Change to tqdm.auto for better notebook compatibility
+from tqdm.auto import tqdm  
 import torch
 import torchvision
 from typing import Dict
@@ -70,25 +69,13 @@ def _process_audio(audio: str, processor) -> Dict[str, torch.Tensor]:
         
     # Process with Wav2Vec2 processor
     processed = processor(
-        audio.numpy().astype(np.float32),  
+        audio.numpy(),  
         sampling_rate=16000,  # Ensure consistent sampling rate
         return_tensors="pt",
         
     )
     
     return processed
-
-# Add global caches
-audio_cache = {}
-
-def get_audio_segment(video_path):
-    """
-    Retrieve AudioSegment from cache or load if not present.
-    """
-    if video_path not in audio_cache:
-        audio_segment = AudioSegment.from_file(video_path)
-        audio_cache[video_path] = audio_segment.set_frame_rate(16000) # Ensure consistent frame rate
-    return audio_cache[video_path]
 
 def deterministic_clip_id(task, media_file, start_time, end_time, clip_duration):
     """
@@ -106,7 +93,6 @@ def process_video(args):
     media_file, task, group, excluded_segments, video_path, output_dir, clip_duration, overlap, segment_to_clip_map = args
     
     successful_clips = set()
-    audio = get_audio_segment(video_path)
     video_output_dir = os.path.join(output_dir, 'videos')
     audio_output_dir = os.path.join(output_dir, 'audios')
     os.makedirs(video_output_dir, exist_ok=True)
@@ -118,14 +104,41 @@ def process_video(args):
     audio_h5 = h5py.File(audio_h5_path, 'a')
     video_h5 = h5py.File(video_h5_path, 'a')
 
-
     # Process video and audio with PyAV and save preprocessed features
     try:
         with av.open(video_path) as container:
             
             video_stream = next(s for s in container.streams if s.type == 'video')
+            audio_stream = next((s for s in container.streams if s.type == 'audio'), None)
+            
             fps = float(video_stream.average_rate)
             duration = container.duration / av.time_base
+
+            # Extract all audio frames first
+            audio_frames = []
+            if audio_stream:
+                container.seek(0)
+                for frame in container.decode(audio=0):
+                    audio_frames.append(frame.to_ndarray())
+            
+            # Concatenate audio frames and convert to tensor
+            if audio_frames:
+                audio_array = np.concatenate(audio_frames, axis=1)
+                audio_tensor = torch.from_numpy(audio_array).float()
+                
+                # Convert stereo to mono if needed
+                if audio_tensor.shape[0] > 1:
+                    audio_tensor = torch.mean(audio_tensor, dim=0, keepdim=True)
+                
+                # Resample to 16kHz if needed
+                original_sr = audio_stream.sample_rate
+                if original_sr != 16000:
+                    import torchaudio
+                    resampler = torchaudio.transforms.Resample(orig_freq=original_sr, new_freq=16000)
+                    audio_tensor = resampler(audio_tensor)
+            else:
+                # No audio - create silence
+                audio_tensor = torch.zeros(1, int(duration * 16000))
 
             stride = clip_duration - overlap
             start_times = np.arange(0, duration - clip_duration, stride)
@@ -143,15 +156,20 @@ def process_video(args):
 
             print(f"Found {len(video_clips)} clips in {video_path}")
             for clip_id, start_time, end_time in video_clips:
-                # Skip if clip already processed
-                if clip_id in audio_h5 and clip_id in video_h5:
+
+                # Skip if already processed
+                if clip_id in audio_h5 or clip_id in video_h5:
                     successful_clips.add(clip_id)
+                    print(f"Skipping already processed clip {clip_id}")
                     continue
+
                 # Process and save audio features
-                audio_clip = audio[int(start_time*1000):int(end_time*1000)]
-                audio_array = torch.tensor(audio_clip.get_array_of_samples())
+                start_sample = int(start_time * 16000)
+                end_sample = int(end_time * 16000)
+                audio_clip = audio_tensor[:, start_sample:end_sample]
               
-                audio_features = _process_audio(audio_array.unsqueeze(0), audio_processor)
+                audio_features = _process_audio(audio_clip, audio_processor)
+                
                 # Save as float16
                 for k, v in audio_features.items():
                     arr = v.cpu().numpy().astype('float16')
@@ -159,11 +177,6 @@ def process_video(args):
                     if ds_name in audio_h5:
                         del audio_h5[ds_name]
                     audio_h5.create_dataset(ds_name, data=arr, compression='gzip')
-
-                # torch.save(
-                #     audio_features,
-                #     os.path.join(audio_output_dir, f'{clip_id}.pt')
-                # )
 
                 # Extract frames directly for video features
                 start_frame = int(start_time * fps)
@@ -199,11 +212,6 @@ def process_video(args):
                     if ds_name in video_h5:
                         del video_h5[ds_name]
                     video_h5.create_dataset(ds_name, data=arr, compression='gzip')
-
-                # torch.save(
-                #     video_features,
-                #     os.path.join(video_output_dir, f'{clip_id}.pt')
-                # )
         
                 successful_clips.add(clip_id)
                 
@@ -384,7 +392,7 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, default='data/clips', help='Directory to save output clips and labels')
     parser.add_argument('--clip_duration', type=int, default=5, help='Duration of each clip in seconds')
     parser.add_argument('--overlap', type=int, default=2, help='Overlap duration between clips in seconds')
-    parser.add_argument('--max_workers', type=int, default=20, help='Number of threads to use for processing')
+    parser.add_argument('--max_workers', type=int, default=23, help='Number of threads to use for processing')
     
     return parser.parse_args()
 

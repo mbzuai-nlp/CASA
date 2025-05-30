@@ -46,8 +46,7 @@ pip install -r requirements.txt
 
 ### 1. Prepare Input Data
 
-1. **Download Media Files**
-   Follow the instructions [Here](docs/download.md)
+1. **Download Media Files**: Follow the instructions [Here](docs/download.md)
 
 2. **Verify Input Data Structure**:
    ```
@@ -60,15 +59,15 @@ pip install -r requirements.txt
    └── exclusions.csv
    ```
 
-3. **Required Files**:
+ ***Required Files***:
    - `total_dataset.csv`: Contains stuttering annotations with columns:
      - media_file: filename without extension
      - item: the group id in the form [media_id-(group_start_time, group_end_time)] after grouping annotations based on region.
      - start: start time in milliseconds
      - end: end time in milliseconds
      - annotator: (A1, A2, A3, Gold) and additional annotator aggrigation methods (BAU, MAS, SAD)
-     - SR, ISR, MUR, P, B, V, FG, HM, ME: stuttering type indicators (0/1) refere to [Annotation Guidelines](docs/guidlines.md) for details
-  - `exclusions.csv` : Containes the unannotated region. (Interviewer part of interview section)
+     - SR, ISR, MUR, P, B, V, FG, HM, ME, T: stuttering type indicators (0/1) refere to [Annotation Guidelines](docs/guidlines.md) for details
+  - `exclusions.csv` : Containes the unannotated regions. (Interviewer part of interview section)
 
 ### 2. Run Dataset Preparation
 To prepare the data for training run the following command:
