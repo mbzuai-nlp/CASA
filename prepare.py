@@ -75,15 +75,6 @@ def _process_audio(audio: str, processor) -> Dict[str, torch.Tensor]:
     
     return processed
 
-def sample_frame_indices(clip_len, frame_sample_rate, seg_len):
-    converted_len = int(clip_len * frame_sample_rate)
-    end_idx = np.random.randint(converted_len, seg_len)
-    start_idx = end_idx - converted_len
-    indices = np.linspace(start_idx, end_idx, num=clip_len)
-    indices = np.clip(indices, start_idx, end_idx - 1).astype(np.int64)
-    return indices
-
-
 # Add global caches
 audio_cache = {}
 
@@ -95,75 +86,6 @@ def get_audio_segment(video_path):
         audio_segment = AudioSegment.from_file(video_path)
         audio_cache[video_path] = audio_segment.set_frame_rate(16000)  # Ensure consistent frame rate
     return audio_cache[video_path]
-
-
-def process_clip(args):
-    """
-    Process a single clip - helper function for parallel processing.
-    Uses PyAV for video processing.
-    """
-    start_time, end_time, video_path, output_dir, clip_duration, clip_id = args
-
-    try:
-        # Use cached audio
-        audio = get_audio_segment(video_path)
-        audio_clip = audio.set_frame_rate(16000)[int(start_time*1000):int(end_time*1000)]
-        audio_features = _process_audio(audio_clip.get_array_of_samples(), audio_processor)
-
-        audio_output_dir = os.path.join(output_dir, 'audios')
-        torch.save(
-            audio_features,
-            os.path.join(audio_output_dir, f'{clip_id}_audio.pt')
-        )
-
-        # Use PyAV for video processing
-        video_output_dir = os.path.join(output_dir, 'videos')
-        os.makedirs(video_output_dir, exist_ok=True)
-        output_video_path = os.path.join(video_output_dir, f'{clip_id}.mp4')
-
-        with av.open(video_path) as container:
-            video_stream = next(s for s in container.streams if s.type == 'video')
-            fps = float(video_stream.average_rate)
-            width = video_stream.codec_context.width
-            height = video_stream.codec_context.height
-
-            # Seek to the start time (in microseconds)
-            container.seek(int(start_time * av.time_base * 1e6), any_frame=False, stream=video_stream)
-
-            # Prepare output container
-            output_container = av.open(output_video_path, mode='w')
-            out_stream = output_container.add_stream('mpeg4', rate=fps)
-            out_stream.width = width
-            out_stream.height = height
-            out_stream.pix_fmt = 'yuv420p'
-
-            frames_to_write = int(clip_duration * fps)
-            frames_written = 0
-
-            for frame in container.decode(video_stream):
-                if frame.pts is None:
-                    continue
-                frame_time = float(frame.pts * video_stream.time_base)
-                if frame_time < start_time:
-                    continue
-                if frame_time >= end_time or frames_written >= frames_to_write:
-                    break
-                # Write frame to output
-                packet = out_stream.encode(frame)
-                if packet:
-                    output_container.mux(packet)
-                frames_written += 1
-
-            # Flush encoder
-            for packet in out_stream.encode():
-                output_container.mux(packet)
-            output_container.close()
-
-        return clip_id, True
-
-    except Exception as e:
-        print(f"Error processing clip: {str(e)}")
-        return None, False
 
 def deterministic_clip_id(media_file, start_time, end_time, clip_duration):
     """
@@ -345,14 +267,17 @@ def create_overlapping_clips(input_df, base_path, output_dir='clips', clip_durat
     # Create and save labels DataFrame
     labels_df = pd.DataFrame(clips_metadata)
     all_clip_ids = labels_df['clip_id'].unique()
+    meta_cols = ['media_file', 'task', 'split', 'start_time', 'end_time']
     label_cols = ['SR', 'ISR', 'MUR', 'P', 'B', 'V', 'FG', 'HM', 'ME', 'T']
+    gold_df = labels_df[labels_df['annotator'] == 'Gold']
+    gold_test_df = gold_df[gold_df['split'] == 'test']
 
     for annotator in tqdm(labels_df['annotator'].unique(), desc="Saving annotator labels"):
         annotator_df = labels_df[labels_df['annotator'] == annotator]
-        gold_df = labels_df[labels_df['annotator'] == 'Gold']
+        # gold_df = labels_df[labels_df['annotator'] == 'Gold']
 
         # For test split, use gold labels if available
-        if not gold_df.empty:
+        if not gold_test_df.empty:
             annotator_df = annotator_df[annotator_df['split'] != 'test']
             gold_test_df = gold_df[gold_df['split'] == 'test']
             annotator_df = pd.concat([annotator_df, gold_test_df], ignore_index=True)
@@ -380,8 +305,35 @@ def create_overlapping_clips(input_df, base_path, output_dir='clips', clip_durat
        
        # Merge/aggregate labels for the same clip
         annotator_df = annotator_df.groupby(['clip_id']).agg(agg_fn()).reset_index()
-        annotator_df.to_csv(os.path.join(output_dir, 'labels', f'{annotator}_labels.csv'), index=False)
-        
+        annotator_df.to_csv(os.path.join(output_dir, 'labels', f'{annotator}.csv'), index=False)
+    
+    # Save majority (MAJ) label for each clip
+    def majority_vote(x):
+        # x is a DataFrame for a single clip_id
+        maj = {}
+        for col in label_cols:
+            # Use mode, fallback to 0 if tie or empty
+            vals = x[col].values
+            if len(vals) == 0:
+                maj[col] = 0
+            else:
+                counts = np.bincount(vals.astype(int))
+                maj[col] = counts.argmax() if counts.sum() > 0 else 0
+        return pd.Series(maj)
+
+    maj_df = labels_df[labels_df['annotator'].isin(['A1','A2','A3'])].groupby('clip_id').apply(majority_vote).reset_index()
+    maj_df['annotator'] = 'MAJ'
+    
+    meta_df = labels_df.drop_duplicates('clip_id').set_index('clip_id')
+    for col in meta_cols:
+        maj_df[col] = maj_df['clip_id'].map(meta_df[col])
+    maj_df['annotation_start'] = np.nan
+    maj_df['annotation_end'] = np.nan
+
+    # Reorder columns to match annotator files
+    maj_df = maj_df[['clip_id', 'media_file', 'task', 'split', 'annotator', 'annotation_start', 'annotation_end', 'start_time', 'end_time'] + label_cols]
+    maj_df.to_csv(os.path.join(output_dir, 'labels', 'MAJ.csv'), index=False)
+
     return labels_df
 
 def parse_args():
@@ -398,7 +350,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    csv_path = os.path.join(args.root_dir, '_tmp.csv')
+    csv_path = os.path.join(args.root_dir, 'total_dataset.csv')
     df = pd.read_csv(csv_path)
     # conver start and end times to seconds
     df['start'] = df['start'] / 1000

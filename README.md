@@ -71,21 +71,21 @@ pip install -r requirements.txt
   - `exclusions.csv` : Containes the unannotated region. (Interviewer part of interview section)
 
 ### 2. Run Dataset Preparation
-To prepare the data for processing with pyannote run the following command:
-(Note: This takes ~ 30 mins with a 16 core CPU.)
+To prepare the data for training run the following command:
+(Note: This takes ~ 30 mins with a 24 core CPU.)
 ```bash
 python prepare.py \
     --root_dir "/path/to/root/dir" \ 
     --input_dir "/path/to/output/dir" \ 
     --clip_duration 5 \ # duration of each clip in seconds
     --overlap 2 \ # the overlap window
-    --max_workers 8 \ # update this number based on the number of cpu cores
+    --max_workers 16 \ # update this number based on the number of cpu cores
 ```
 
 The script generates:
-1. 5 second audio and video clips
+1. 5 second audio and video features preprocessed using the respective Wav2vec2 and ViViT Processors
 2. Labels for each annotator
-3. Labels for the aggrigation methods (BAU, MAS, SAD)
+3. Labels for the aggrigation methods (BAU, MAS, SAD, MAJ)
 
 ## 🧠 Models
 
