@@ -11,6 +11,8 @@ import torch
 import torchvision
 from typing import Dict
 from transformers import Wav2Vec2Processor, VivitImageProcessor
+import h5py
+
 
 video_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinetics400")
 audio_processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-base-960h")
@@ -71,6 +73,7 @@ def _process_audio(audio: str, processor) -> Dict[str, torch.Tensor]:
         audio.numpy().astype(np.float32),  
         sampling_rate=16000,  # Ensure consistent sampling rate
         return_tensors="pt",
+        
     )
     
     return processed
@@ -84,15 +87,16 @@ def get_audio_segment(video_path):
     """
     if video_path not in audio_cache:
         audio_segment = AudioSegment.from_file(video_path)
-        audio_cache[video_path] = audio_segment.set_frame_rate(16000)  # Ensure consistent frame rate
+        audio_cache[video_path] = audio_segment.set_frame_rate(16000) # Ensure consistent frame rate
     return audio_cache[video_path]
 
-def deterministic_clip_id(media_file, start_time, end_time, clip_duration):
+def deterministic_clip_id(task, media_file, start_time, end_time, clip_duration):
     """
     Generate a deterministic, reusable clip ID based on media_file, start_time, end_time, and clip_duration.
     """
-    id_str = f"{media_file}_{start_time:.3f}_{end_time:.3f}_{clip_duration}"
-    return hashlib.md5(id_str.encode('utf-8')).hexdigest()
+    id_str = f"{task}_{media_file}_{start_time:.3f}_{end_time:.3f}"
+    # return hashlib.md5(id_str.encode('utf-8')).hexdigest()
+    return id_str
 
 def process_video(args):
     """
@@ -108,37 +112,58 @@ def process_video(args):
     os.makedirs(video_output_dir, exist_ok=True)
     os.makedirs(audio_output_dir, exist_ok=True)
 
-    # Prepare all clip segments for this video
-    duration = audio.duration_seconds
-    stride = clip_duration - overlap
-    start_times = np.arange(0, duration - clip_duration, stride)
-    video_clips = []
-    for start_time in start_times:
-        end_time = start_time + clip_duration
-        if is_segment_excluded(start_time, end_time, excluded_segments):
-            continue
-        # Use deterministic clip ID
-        clip_id = deterministic_clip_id(media_file, start_time, end_time, clip_duration)
-        segment_key = (media_file, start_time, end_time)
-        segment_to_clip_map[segment_key] = clip_id
-        video_clips.append((clip_id, start_time, end_time))
-    
+    # Prepare HDF5 files for this video
+    audio_h5_path = os.path.join(audio_output_dir, f'{task}_{media_file}.h5')
+    video_h5_path = os.path.join(video_output_dir, f'{task}_{media_file}.h5')
+    audio_h5 = h5py.File(audio_h5_path, 'a')
+    video_h5 = h5py.File(video_h5_path, 'a')
+
+
     # Process video and audio with PyAV and save preprocessed features
     try:
         with av.open(video_path) as container:
+            
             video_stream = next(s for s in container.streams if s.type == 'video')
             fps = float(video_stream.average_rate)
+            duration = container.duration / av.time_base
 
+            stride = clip_duration - overlap
+            start_times = np.arange(0, duration - clip_duration, stride)
+            
+            video_clips = []
+            for start_time in start_times:
+                end_time = start_time + clip_duration
+                if is_segment_excluded(start_time, end_time, excluded_segments):
+                    continue
+                # Use deterministic clip ID
+                clip_id = deterministic_clip_id(task, media_file, start_time, end_time, clip_duration)
+                segment_key = (task, media_file, start_time, end_time)
+                segment_to_clip_map[segment_key] = clip_id
+                video_clips.append((clip_id, start_time, end_time))
+
+            print(f"Found {len(video_clips)} clips in {video_path}")
             for clip_id, start_time, end_time in video_clips:
+                # Skip if clip already processed
+                if clip_id in audio_h5 and clip_id in video_h5:
+                    successful_clips.add(clip_id)
+                    continue
                 # Process and save audio features
                 audio_clip = audio[int(start_time*1000):int(end_time*1000)]
                 audio_array = torch.tensor(audio_clip.get_array_of_samples())
               
                 audio_features = _process_audio(audio_array.unsqueeze(0), audio_processor)
-                torch.save(
-                    audio_features,
-                    os.path.join(audio_output_dir, f'{clip_id}.pt')
-                )
+                # Save as float16
+                for k, v in audio_features.items():
+                    arr = v.cpu().numpy().astype('float16')
+                    ds_name = f"{clip_id}/{k}"
+                    if ds_name in audio_h5:
+                        del audio_h5[ds_name]
+                    audio_h5.create_dataset(ds_name, data=arr, compression='gzip')
+
+                # torch.save(
+                #     audio_features,
+                #     os.path.join(audio_output_dir, f'{clip_id}.pt')
+                # )
 
                 # Extract frames directly for video features
                 start_frame = int(start_time * fps)
@@ -168,15 +193,26 @@ def process_video(args):
                 pil_frames = [torchvision.transforms.ToPILImage()(torch.from_numpy(frame).permute(2,0,1)) for frame in frames]
                 
                 video_features = video_processor(images=pil_frames, return_tensors="pt")
-                torch.save(
-                    video_features,
-                    os.path.join(video_output_dir, f'{clip_id}.pt')
-                )
+                for k, v in video_features.items():
+                    arr = v.cpu().numpy().astype('float16')
+                    ds_name = f"{clip_id}/{k}"
+                    if ds_name in video_h5:
+                        del video_h5[ds_name]
+                    video_h5.create_dataset(ds_name, data=arr, compression='gzip')
+
+                # torch.save(
+                #     video_features,
+                #     os.path.join(video_output_dir, f'{clip_id}.pt')
+                # )
         
                 successful_clips.add(clip_id)
                 
     except Exception as e:
         print(f"Error processing video {video_path}: {str(e)}")
+    finally:
+        # Close HDF5 files
+        audio_h5.close()
+        video_h5.close()
 
     return video_clips, successful_clips
 
@@ -226,113 +262,117 @@ def create_overlapping_clips(input_df, base_path, output_dir='clips', clip_durat
                 all_video_clips.extend(video_clips)
                 all_successful_clips.update(successful_clips)
                 pbar.update(1)
+    
 
-    print("\nCreating labels...")
-    # Create labels for successful clips with progress bar
-    for (media_file, task), group in tqdm(grouped, desc="Creating labels"):
-        for segment_key, clip_id in segment_to_clip_map.items():
-            seg_media_file, start_time, end_time = segment_key
-            if seg_media_file != media_file:
-                continue
-            if clip_id not in all_successful_clips:
-                continue
-            clip_labels = group[
-                ((group['start'] >= start_time) & (group['start'] < end_time)) |
-                ((group['end'] > start_time) & (group['end'] <= end_time)) |
-                ((group['start'] <= start_time) & (group['end'] >= end_time))
-            ]
-            for _, row in clip_labels.iterrows():
+    # Create labels for successful clips
+    meta_cols = ['media_file', 'task', 'split', 'start_time', 'end_time']
+    label_cols = ['SR', 'ISR', 'MUR', 'P', 'B', 'V', 'FG', 'HM', 'ME', 'T']
+    clips_metadata = []
+    all_annotators = input_df['annotator'].unique()
+    
+    for segment_key, clip_id in tqdm(segment_to_clip_map.items(), desc="Creating labels"):
+        seg_task, seg_media_file, start_time, end_time = segment_key
+        
+        # Get the group for this segment
+        group = grouped.get_group((seg_media_file, seg_task)) if (seg_media_file, seg_task) in grouped.groups else pd.DataFrame()
+        if group.empty:
+            continue
+            
+        split = group['split'].iloc[0]
+        
+        # Find overlapping annotations
+        clip_labels = group[
+            ((group['start'] >= start_time) & (group['start'] < end_time)) |
+            ((group['end'] > start_time) & (group['end'] <= end_time)) |
+            ((group['start'] <= start_time) & (group['end'] >= end_time))
+        ]
+        
+        # For test split, only use Gold annotator
+        if split == 'test':
+            annotators_to_process = ['Gold']
+        else:
+            annotators_to_process = all_annotators
+        
+        # Create entries for each required annotator
+        for annotator in annotators_to_process:
+            annotator_labels = clip_labels[clip_labels['annotator'] == annotator]
+            
+            if annotator_labels.empty:
+                # No annotations for this annotator - create zero entry
                 clips_metadata.append({
                     'clip_id': clip_id,
-                    'media_file': media_file,
-                    'task': task,
-                    'split': row['split'],
-                    'annotator': row['annotator'],
-                    'annotation_start': row['start'],
-                    'annotation_end': row['end'],
+                    'media_file': seg_media_file,
+                    'task': seg_task,
+                    'split': split,
+                    'annotator': annotator,
+                    'annotation_start': np.nan,
+                    'annotation_end': np.nan,
                     'start_time': start_time,
                     'end_time': end_time,
-                    'SR': row['SR'],
-                    'ISR': row['ISR'], 
-                    'MUR': row['MUR'],
-                    'P': row['P'],
-                    'B': row['B'],
-                    'V': row['V'],
-                    'FG': row['FG'],
-                    'HM': row['HM'],
-                    'ME': row['ME'],
-                    'T': row['T']
+                    **{col: 0 for col in label_cols}
                 })
+            else:
+                # Add entries for each annotation from this annotator
+                for _, row in annotator_labels.iterrows():
+                    clips_metadata.append({
+                        'clip_id': clip_id,
+                        'media_file': seg_media_file,
+                        'task': seg_task,
+                        'split': split,
+                        'annotator': annotator,
+                        'annotation_start': row['start'],
+                        'annotation_end': row['end'],
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        **{col: row[col] for col in label_cols}
+                    })
 
     # Create and save labels DataFrame
     labels_df = pd.DataFrame(clips_metadata)
-    all_clip_ids = labels_df['clip_id'].unique()
-    meta_cols = ['media_file', 'task', 'split', 'start_time', 'end_time']
-    label_cols = ['SR', 'ISR', 'MUR', 'P', 'B', 'V', 'FG', 'HM', 'ME', 'T']
-    gold_df = labels_df[labels_df['annotator'] == 'Gold']
-    gold_test_df = gold_df[gold_df['split'] == 'test']
-
-    for annotator in tqdm(labels_df['annotator'].unique(), desc="Saving annotator labels"):
-        annotator_df = labels_df[labels_df['annotator'] == annotator]
-        # gold_df = labels_df[labels_df['annotator'] == 'Gold']
-
-        # For test split, use gold labels if available
-        if not gold_test_df.empty:
-            annotator_df = annotator_df[annotator_df['split'] != 'test']
-            gold_test_df = gold_df[gold_df['split'] == 'test']
-            annotator_df = pd.concat([annotator_df, gold_test_df], ignore_index=True)
-
-        # Ensure all clips are present for this annotator
-        annotator_clip_ids = set(annotator_df['clip_id'])
-        missing_clip_ids = set(all_clip_ids) - annotator_clip_ids
-        if missing_clip_ids:
-            # Get metadata for missing clips from labels_df (use first row for each clip)
-            meta_cols = ['media_file', 'task', 'split', 'start_time', 'end_time']
-            meta_df = labels_df.drop_duplicates('clip_id').set_index('clip_id')
-            rows = []
-            for clip_id in missing_clip_ids:
-                meta = meta_df.loc[clip_id]
-                row = {col: meta[col] for col in meta_cols}
-                row['clip_id'] = clip_id
-                row['annotator'] = annotator
-                row['annotation_start'] = np.nan
-                row['annotation_end'] = np.nan
-                for col in label_cols:
-                    row[col] = 0
-                rows.append(row)
-            missing_df = pd.DataFrame(rows)
-            annotator_df = pd.concat([annotator_df, missing_df], ignore_index=True)
-       
-       # Merge/aggregate labels for the same clip
-        annotator_df = annotator_df.groupby(['clip_id']).agg(agg_fn()).reset_index()
-        annotator_df.to_csv(os.path.join(output_dir, 'labels', f'{annotator}.csv'), index=False)
     
-    # Save majority (MAJ) label for each clip
-    def majority_vote(x):
-        # x is a DataFrame for a single clip_id
-        maj = {}
+    # Separate test and non-test data
+    test_df = labels_df[(labels_df['annotator'] == 'Gold') & (labels_df['split'] == 'test')]
+    test_df = test_df.groupby('clip_id').agg(agg_fn()).reset_index()
+    
+    # Process each non-Gold annotator
+    annotators = [a for a in all_annotators if a != 'Gold']
+    all_annotator_dfs = []
+    
+    for annotator in annotators:
+        # Get non-test data for this annotator (including Gold for reference)
+        annotator_df = labels_df[
+            (labels_df['split'] != 'test') & 
+            (labels_df['annotator'].isin(['Gold', annotator]))
+        ]
+        annotator_df = annotator_df.groupby('clip_id').agg(agg_fn()).reset_index()
+        
+        # Save combined data (annotator + test)
+        combined_df = pd.concat([annotator_df, test_df]).sort_values(["media_file", "start_time"])
+        combined_df.to_csv(os.path.join(output_dir, 'labels', f'{annotator}.csv'), index=False)
+        
+        all_annotator_dfs.append(annotator_df)
+    
+    # Create majority vote labels
+    total_annotator_df = pd.concat(all_annotator_dfs, ignore_index=True)
+    
+    def majority_vote(group):
+        result = group.iloc[0].copy()  # Start with first row for metadata
+        result['annotator'] = 'MAJ'
+        
+        # Calculate majority vote for each label column
         for col in label_cols:
-            # Use mode, fallback to 0 if tie or empty
-            vals = x[col].values
-            if len(vals) == 0:
-                maj[col] = 0
+            vals = group[col].dropna().astype(int)
+            if len(vals) > 0:
+                result[col] = vals.mode().iloc[0] if not vals.mode().empty else 0
             else:
-                counts = np.bincount(vals.astype(int))
-                maj[col] = counts.argmax() if counts.sum() > 0 else 0
-        return pd.Series(maj)
-
-    maj_df = labels_df[labels_df['annotator'].isin(['A1','A2','A3'])].groupby('clip_id').apply(majority_vote).reset_index()
-    maj_df['annotator'] = 'MAJ'
+                result[col] = 0
+        return result
     
-    meta_df = labels_df.drop_duplicates('clip_id').set_index('clip_id')
-    for col in meta_cols:
-        maj_df[col] = maj_df['clip_id'].map(meta_df[col])
-    maj_df['annotation_start'] = np.nan
-    maj_df['annotation_end'] = np.nan
-
-    # Reorder columns to match annotator files
-    maj_df = maj_df[['clip_id', 'media_file', 'task', 'split', 'annotator', 'annotation_start', 'annotation_end', 'start_time', 'end_time'] + label_cols]
-    maj_df.to_csv(os.path.join(output_dir, 'labels', 'MAJ.csv'), index=False)
+    maj_df = total_annotator_df.groupby('clip_id').apply(majority_vote).reset_index(drop=True)
+    
+    # Save majority vote + test data
+    maj_combined = pd.concat([maj_df, test_df]).sort_values(["media_file", "start_time"])
+    maj_combined.to_csv(os.path.join(output_dir, 'labels', 'MAJ.csv'), index=False)
 
     return labels_df
 
@@ -343,8 +383,8 @@ def parse_args():
     parser.add_argument('--root_dir', type=str, default='data/Voices-AWS', help='Base path for media files')
     parser.add_argument('--output_dir', type=str, default='data/clips', help='Directory to save output clips and labels')
     parser.add_argument('--clip_duration', type=int, default=5, help='Duration of each clip in seconds')
-    parser.add_argument('--overlap', type=int, default=0, help='Overlap duration between clips in seconds')
-    parser.add_argument('--max_workers', type=int, default=16, help='Number of threads to use for processing')
+    parser.add_argument('--overlap', type=int, default=2, help='Overlap duration between clips in seconds')
+    parser.add_argument('--max_workers', type=int, default=20, help='Number of threads to use for processing')
     
     return parser.parse_args()
 

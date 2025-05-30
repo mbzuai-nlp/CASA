@@ -20,3 +20,4 @@ beautifulsoup4
 pydub
 av==13.1.0
 pytorch-lightning==2.4.0
+h5py

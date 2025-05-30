@@ -8,7 +8,7 @@
 </div>
 
 
-> **Accepted at Interspeech2025]**
+> **Accepted at Interspeech2025**
 
 This project contains the dataset  and baseline multimodal classification models described by [Paper](link to paper) Refer  [Annotation Guidline](guidlines.md) to see the details of the annotaion guidlines.
 
@@ -72,7 +72,7 @@ pip install -r requirements.txt
 
 ### 2. Run Dataset Preparation
 To prepare the data for training run the following command:
-(Note: This takes ~ 30 mins with a 24 core CPU.)
+(Note: This takes ~ 30 mins with a 24 core CPU. It also requires >130GB of memory ) 
 ```bash
 python prepare.py \
     --root_dir "/path/to/root/dir" \ 

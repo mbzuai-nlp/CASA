@@ -6,7 +6,7 @@ from pytorch_lightning.loggers import WandbLogger, TensorBoardLogger
 from torch.utils.data import DataLoader
 from configs import from_args
 from models import  prep_model
-from dataset import prep_dataset
+from dataset import prep_dataset, collate_fn
 
 import torch
 
@@ -14,7 +14,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train a stuttering detection model")
     # dataset arguments
     parser.add_argument('--dataset_root', type=str, default='data/clips', help='Root directory for dataset')
-    parser.add_argument('--dataset_annotator', type=str, default='BAU', help='Path to the label file')
+    parser.add_argument('--dataset_annotator', type=str, default='bau', help='Path to the label file')
     parser.add_argument('--dataset_label', type=str, default=None, help='Label to use for upsampling')
     parser.add_argument('--dataset_sampling_rate', type=int, default=16000, help='Sampling rate for audio')
     # audio model arguments 
@@ -79,14 +79,16 @@ def main(args):
         train_dataset,
         batch_size=config.batch_size,
         shuffle=True,
-        num_workers=config.num_workers
+        num_workers=config.num_workers,
+        collate_fn=collate_fn
     )
     val_dataset = prep_dataset(config.dataset_config, split='val', modality=config.modality)
     val_loader = DataLoader(
         val_dataset,
         batch_size=config.batch_size,
         shuffle=False,
-        num_workers=config.num_workers
+        num_workers=config.num_workers,
+        collate_fn=collate_fn
     )
 
     test_dataset = prep_dataset(config.dataset_config, split='test', modality=config.modality)
@@ -94,7 +96,8 @@ def main(args):
         test_dataset,
         batch_size=config.batch_size,
         shuffle=False,
-        num_workers=config.num_workers
+        num_workers=config.num_workers,
+        collate_fn=collate_fn
     )
 
     model = prep_model(config)

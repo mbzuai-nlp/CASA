@@ -4,7 +4,7 @@ import pandas as pd
 from torch.utils.data import Dataset
 from typing import Dict, List, Optional, Union
 from configs import TrainingConfig, DatasetConfig
-
+import h5py
 from sklearn.utils import resample
 
 class BaseDataset(Dataset):
@@ -58,6 +58,19 @@ class BaseDataset(Dataset):
         else:
             return df
 
+    def read_h5(self, h5_path: str, clip_id: str) -> Dict[str, torch.Tensor]:
+        """Load all features for a clip_id from an HDF5 file."""
+        features = {}
+        with h5py.File(h5_path, 'r') as h5f:
+            if clip_id not in h5f:
+                raise KeyError(f"Clip {clip_id} not found in {h5_path}")
+            group = h5f[clip_id]
+            for k in group.keys():
+                arr = group[k][()]
+                features[k] = torch.tensor(arr, dtype=torch.float32)  
+        
+        return features
+    
     def process_label(self, clip_data):
         """Process labels from dataframe row"""
         labels = {}
@@ -77,8 +90,8 @@ class BaseDataset(Dataset):
     def get_item_paths(self, clip_id):
         """Get paths for a specific clip ID"""
         return {
-            'audio': f"{self.root}/audios/{clip_id}.pt",
-            'video': f"{self.root}/videos/{clip_id}.pt",
+            'audio': f"{self.root}/audios/{clip_id}.h5",
+            'video': f"{self.root}/videos/{clip_id}.h5",
         }
 
 class AudioDataset(BaseDataset):
@@ -100,10 +113,12 @@ class AudioDataset(BaseDataset):
 
         clip_id = self.clips[idx]
         clip_data = self.data_df[self.data_df['clip_id'] == clip_id].iloc[0]
-        audio_path = self.get_item_paths(clip_id)['audio']
+        media_file = clip_data['media_file']
+        task = clip_data['task']
+        audio_path = self.get_item_paths(f"{task}_{media_file}")['audio']
 
         if os.path.exists(audio_path):
-            audio = torch.load(audio_path, weights_only=False)
+            audio = self.read_h5(audio_path, clip_id)
         else:
             print(f"Audio file not found for clip {clip_id}")
             audio = torch.zeros(1, self.target_sampling_rate)  # Default to empty audio
@@ -129,12 +144,14 @@ class VideoDataset(BaseDataset):
     def __getitem__(self, idx):
         clip_id = self.clips[idx]
         clip_data = self.data_df[self.data_df['clip_id'] == clip_id].iloc[0]
-        video_path = self.get_item_paths(clip_id)['video']
+        media_file = clip_data['media_file']
+        task = clip_data['task']
+        video_path = self.get_item_paths(f"{task}_{media_file}")['video']
 
         if not os.path.exists(video_path):
             raise FileNotFoundError(f"Video file not found for clip {clip_id}: {video_path}")
         
-        video = torch.load(video_path, weights_only=False)
+        video = self.read_h5(video_path, clip_id)
         label = self.process_label(clip_data)
 
         return {
@@ -158,18 +175,21 @@ class VideoAudioDataset(BaseDataset):
 
     def __getitem__(self, idx):
         clip_id = self.clips[idx]
+        
         clip_data = self.data_df[self.data_df['clip_id'] == clip_id].iloc[0]
-        paths = self.get_item_paths(clip_id)
+        media_file = clip_data['media_file']
+        task = clip_data['task']
+        paths = self.get_item_paths(f"{task}_{media_file}")
         audio_path = paths['audio']
         video_path = paths['video']
 
         if not os.path.exists(audio_path) or not os.path.exists(video_path):
             raise FileNotFoundError(f"file not found for clip {clip_id}: {audio_path}, {video_path}")
         
-        audio_inputs = torch.load(audio_path, weights_only=False)  
-        video_inputs = torch.load(video_path, weights_only=False) 
+        audio_inputs = self.read_h5(audio_path, clip_id) 
+        video_inputs = self.read_h5(video_path, clip_id)
         label = self.process_label(clip_data)
-
+        breakpoint()
         return {
             "clip_id": clip_id,
             "audio_inputs": audio_inputs,
@@ -189,18 +209,31 @@ def prep_dataset(config: DatasetConfig, split: str = "train", modality: Optional
     else:
         raise ValueError(f"Unsupported modality: {modality}")
 
+def collate_fn(batch: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor]:
+    
+    # collator to stack tensors
+    collated = {}
+    for key in batch[0].keys():
+        if isinstance(batch[0][key], torch.Tensor):
+            collated[key] = torch.stack([item[key] for item in batch])
+        elif isinstance(batch[0][key], dict):
+            collated[key] = collate_fn([item[key] for item in batch])
+        else:
+            collated[key] = [item[key] for item in batch]
+
+    return collated
 
 if __name__ == "__main__":
     from torch.utils.data import DataLoader
     config = DatasetConfig(
         root="data/clips",
-        label_path="data/clips/labels/A1_labels.csv",
+        annotator="A1",
         sampling_rate=16000
     )
     
     dataset = prep_dataset(config, split="train", modality="multimodal")
     
-    data_loader = DataLoader(dataset, batch_size=2, shuffle=True, num_workers=0)
+    data_loader = DataLoader(dataset, batch_size=2, shuffle=True, num_workers=0, collate_fn=collate_fn)
     for batch in data_loader:
-        print(batch['audio_inputs']['input_values'].shape)
+        print(batch['audio_inputs']['input_values'].shape, batch['video_inputs']['pixel_values'].shape)
         break  # Just print the first batch for testing
