@@ -3,7 +3,7 @@
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Paper](https://img.shields.io/badge/Paper-PDF-blue)](https://arxiv.org/2506.00644)
+[![Paper](https://img.shields.io/badge/Paper-PDF-blue)](https://arxiv.org/abs/2506.00644)
 [![Project](https://img.shields.io/badge/Project-CASA-red)](https://github.com/mbzuai-nlp/CASA)
 </div>
 
