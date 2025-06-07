@@ -10,7 +10,7 @@
 
 > **Accepted at Interspeech2025**
 
-This project contains the dataset  and baseline multimodal classification models described by [Paper](link to paper) Refer  [Annotation Guidline](guidlines.md) to see the details of the annotaion guidlines.
+This project contains the dataset  and baseline multimodal classification models described by [Paper](https://arxiv.org/abs/2506.00644) Refer  [Annotation Guidline](docs/guidlines.md) to see the details of the annotaion guidlines.
 
 
 ## Project Structure
