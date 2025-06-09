@@ -1,6 +1,8 @@
-<h1 align="center"> Annotation Guidlines </h1>
+<h1> Annotation Guidlines </h1>
 
-Three speech and language pathologists, with experience ranging from 2 to 40 years, independently annotated and analyzed the audiovisual samples. The annotations were created using the [ELAN](https://archive.mpi.nl/tla/elan/) tool. 
+> *The following Guideline was shared with the annotators* 
+
+<h1 align="center">Stuttering analysis on ELAN program</h1>
 
 The ELAN program is a tool developed on Max Planck Institute for Psycholinguistics which allows the creation of annotations on video and audio resources. The application can be downloaded [here](https://archive.mpi.nl/tla/elan/download)
 
@@ -10,26 +12,28 @@ The ELAN program's workspace (referred to as Annotation Mode) consists of an are
 
 ### Step-by-step on ELAN program to analyze and characterize stuttering moment
 
-1. The raters first download the initial eaf files to their computer and follow this steps 
+1. The files are available [here](https://mbzuaiac-my.sharepoint.com/personal/hanan_aldarmaki_mbzuai_ac_ae/Documents/Forms/All.aspx?web=1&FolderCTID=0x012000DADF2E9ADCCDF147908DB396B9DBE845&id=%2Fpersonal%2Fhanan%5Faldarmaki%5Fmbzuai%5Fac%5Fae%2FDocuments%2FStutterBank%2FFluencyBank%2DData%2FVoices%2DAWS)
 
-2. Select an *.eaf file
+2. Download the files for your computer;
+
+3. Select an *.eaf file
 ![ELAN workspace interface](assets/images/protocol-001.jpg)
 
-3. Add a new tier (Tier-Add New Tier) and name it (e.g., “stuttering moments”).
+4. Add a new tier (Tier-Add New Tier) and name it (e.g., “stuttering moments”).
 ![ELAN workspace interface](assets/images/protocol-002.jpg)
 
-4. Add another tier named “Doubts”. This tier allows you to write down any doubts that arise during certain moments of stuttering.
+5. Add another tier named “Doubts”. This tier allows you to write down any doubts that arise during certain moments of stuttering.
 
-5. Play the speech sample one time to familiarize with it;
+6. Play the speech sample one time to familiarize with it;
 
-6. Select each stuttering event by dragging the cursor along the stuttering moment. Each selected moment could be played again;
+7. Select each stuttering event by dragging the cursor along the stuttering moment. Each selected moment could be played again;
 ![ELAN workspace interface](assets/images/protocol-003.jpg)
 
-7. It should be used the information of the waveform to make a reliable identification of stuttering events. It is recommended to use the zoom function on the waveform (between 300% and 500%, stereo channels, merged) to improve visualization, as the waveform provided by the ELAN software has low amplitude. In case of doubt, the examiner may open the full speech sample or the selected segment with the Praat software.
+8. It should be used the information of the waveform to make a reliable identification of stuttering events. It is recommended to use the zoom function on the waveform (between 300% and 500%, stereo channels, merged) to improve visualization, as the waveform provided by the ELAN software has low amplitude. In case of doubt, the examiner may open the full speech sample or the selected segment with the Praat software.
     a. The duration of repeated movements should be measured from the point where the repeated sound begins until the cessation of the repeated movement. The following examples illustrate the start and end of the stuttering moment (represented by []): “He [we-we-we] went to the beach” or “I [don't-don't-don't] want to go home.”
     b. For stuttering moments that contain fixed postures (i.e., prolongations or blocks), the start should be considered the point where the disfluent sound begins, and the end of the moment occurs when the following sound begins. The following examples illustrate the start and end of the stuttering moment (represented by []): “I saw a [ssssssss]nake” or “That[______] tree is beautiful.”
 
-8. With the right bottom, select “new annotation here” and write in the tier the core behavior classification, the secondary behavior classification and the classification of the tension degree, separated by “;”
+9. With the right bottom, select “new annotation here” and write in the tier the core behavior classification, the secondary behavior classification and the classification of the tension degree, separated by “;”
 ![ELAN workspace interface](assets/images/protocol-005.jpg)
 
     **Core behaviors** can be classified using the following categories (LBDL taxonomy):
